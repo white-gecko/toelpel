@@ -1,6 +1,5 @@
 from subprocess import run, DEVNULL
 from pathlib import Path
-from loguru import logger
 from collections import defaultdict
 
 class git():
