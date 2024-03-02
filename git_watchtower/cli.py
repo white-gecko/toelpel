@@ -4,6 +4,8 @@ from os import walk
 from subprocess import run, DEVNULL
 from pathlib import Path
 from loguru import logger
+from rich.console import Console
+from rich.table import Table
 from .git import git
 from .store import WatchStore
 
@@ -60,39 +62,46 @@ def scan(rootdir, index):
 @click.option("-i", "--index", type=click.File("r"))
 def list(rootdir, index):
 
+    console = Console()
+    table = Table(show_header=True, header_style="bold")
+
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
 
-    # git_repos = yaml.safe_load(index)
-    # git_repos = []
-    logger.debug(git_repos)
+    table.add_column("Status")
+    table.add_column("Branches")
+    table.add_column("Repository")
+
     for repo in git_repos:
         status = []
+        branches = []
         status_count = 0
         if not repo.isRepo:
-            click.echo("not a repo\t" + click.style(f"{repo}", bold=True))
+            table.add_row(
+                "[bold]not a repo[/bold]", "", f"[bold]{repo}[/bold]"
+            )
             continue
         if repo.dirty:
             status_count += 1
-            status.append(click.style("?", fg='blue', bold=True))
+            status.append("[bold blue]?[/bold blue]")
         else:
             status.append("-")
         if repo.ignorred_dirt:
             status_count += 1
-            status.append(click.style("?", fg='bright_black', bold=True))
+            status.append("[bold bright_black]?[/bold bright_black]")
         else:
             status.append("-")
         if repo.stashes:
             status_count += 1
-            status.append(click.style("*", fg='yellow', bold=True))
+            status.append("[bold yellow]*[/bold yellow]")
         else:
             status.append("-")
         if not repo.remotes:
             status_count += 1
-            status.append(click.style("no remote", fg='red', bold=True))
+            branches.append("[bold red]no remote[/bold red]")
         elif repo.local_branches:
             status_count += 1
-            status.append(click.style("local branches", fg='red', bold=True))
+            branches.append("[red]local branches[/red]")
         for branch, remote in repo.branches.items():
             if remote:
                 behind = repo.behind(branch)
@@ -101,13 +110,18 @@ def list(rootdir, index):
                 div = ""
                 if (behind or ahead):
                     div = f": -{behind}/+{ahead}"
-                status.append(click.style(f"[{branch}" + div + "]", fg="red" if div else "green"))
+                fg = "red" if div else "green"
+                branches.append(f"[{fg}]\\[{branch}" + div + f"][/{fg}]")
             else:
                 # branch has no remote
                 status_count += 1
-                status.append(click.style(f"[{branch}: ×]", fg='red', bold=True))
+                branches.append(f"[bold red]\\[{branch}: ×][/bold red]")
 
-        click.echo(" ".join(status) + "\t" + click.style(f"{repo}", bold=True if status_count else False))
+        repo_line = f"[bold]{repo}[/bold]" if status_count else f"{repo}"
+        table.add_row(
+            " ".join(status), " ".join(branches), repo_line
+        )
+    console.print(table)
 
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
