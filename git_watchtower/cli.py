@@ -70,8 +70,8 @@ def list(rootdir, index):
     git_repos = store.graph_to_list()
 
     table.add_column("Status")
-    table.add_column("Branches")
-    table.add_column("Repository")
+    table.add_column("Repository", ratio=2)
+    table.add_column("Branches", ratio=1)
 
     for repo in git_repos:
         status = []
@@ -79,7 +79,7 @@ def list(rootdir, index):
         status_count = 0
         if not repo.isRepo:
             table.add_row(
-                "[bold]not a repo[/bold]", "", f"[bold]{repo}[/bold]"
+                "[bold]not a repo[/bold]", f"[bold]{repo}[/bold]", ""
             )
             continue
         if repo.dirty:
@@ -120,7 +120,7 @@ def list(rootdir, index):
 
         repo_line = f"[bold]{repo}[/bold]" if status_count else f"{repo}"
         table.add_row(
-            " ".join(status), " ".join(branches), repo_line
+            " ".join(status), repo_line, " ".join(branches)
         )
     console.print(table)
 

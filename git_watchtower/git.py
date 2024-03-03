@@ -8,10 +8,10 @@ class git():
         self._remotes = None
 
     def __repr__(self) -> str:
-        return self.path
+        return f"<git repo at {self.path}>"
 
     def __str__(self) -> str:
-        return f"<git repo at {self.path}>"
+        return str(self.path)
 
     @property
     def isRepo(self) -> bool:
