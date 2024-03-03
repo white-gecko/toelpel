@@ -51,7 +51,7 @@ def index(rootdir, index, cache):
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("br+"))
 def scan(rootdir, index):
-    """Scan the repositories in an index and update the index"""
+    """Scan the repositories in an index and update the index."""
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
@@ -61,6 +61,7 @@ def scan(rootdir, index):
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("r"))
 def list(rootdir, index):
+    """List all repositories in an index with their respective status."""
 
     console = Console()
     table = Table(show_header=True, header_style="bold")
@@ -127,6 +128,7 @@ def list(rootdir, index):
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("r"))
 def clone(rootdir, index):
+    """Clone all repositories from an index relative to the given root directory."""
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
