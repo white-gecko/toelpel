@@ -88,7 +88,7 @@ class git():
 
     def clone(self):
         # TODO make sure the origin is setup as fetch
-        origin = next(self.remotes["origin"].keys())
+        origin = list(self.remotes["origin"].keys())[0]
         run(["git", "-C", self.path, "clone", origin, "."], encoding="utf-8", capture_output=True)
 
     def setup(self):
