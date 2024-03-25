@@ -8,7 +8,8 @@ from pathlib import Path
 GW = Namespace("https://git-watch/")
 RELPATH = "urn:relpath:"
 
-class WatchStore():
+
+class WatchStore:
     def __init__(self, index: File, base: Path):
         self.index = index
         self.base = base
@@ -32,7 +33,9 @@ class WatchStore():
             yield git(self.get_abspath(repo))
 
     def add_repo_to_graph(self, repo: git):
-        logger.debug(f"write triple for {repo}: {repo.path}: {repo.path.resolve()}: {self.get_relpath(repo.path)}")
+        logger.debug(
+            f"write triple for {repo}: {repo.path}: {repo.path.resolve()}: {self.get_relpath(repo.path)}"
+        )
         repo_resource = self.get_relpath(repo.path)
         self.graph.add((repo_resource, RDF.type, GW["repo"]))
         for remote, remote_dict in repo.remotes.items():

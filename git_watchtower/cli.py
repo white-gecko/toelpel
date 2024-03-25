@@ -9,6 +9,7 @@ from rich.table import Table
 from .git import git
 from .store import WatchStore
 
+
 @click.group()
 def cli():
     """Git🗼Watchtower
@@ -22,6 +23,7 @@ def cli():
     logger.add(stderr, level=loglevel)
     if logfile:
         logger.add(logfile, level=logfilelevel)
+
 
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
@@ -57,6 +59,7 @@ def scan(rootdir, index):
     git_repos = store.graph_to_list()
     store.list_to_graph(git_repos)
 
+
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("r"))
@@ -78,9 +81,7 @@ def list(rootdir, index):
         branches = []
         status_count = 0
         if not repo.isRepo:
-            table.add_row(
-                "[bold]not a repo[/bold]", f"[bold]{repo}[/bold]", ""
-            )
+            table.add_row("[bold]not a repo[/bold]", f"[bold]{repo}[/bold]", "")
             continue
         if repo.dirty:
             status_count += 1
@@ -109,7 +110,7 @@ def list(rootdir, index):
                 ahead = repo.ahead(branch)
                 status_count += 1 if (behind or ahead) else 0
                 div = ""
-                if (behind or ahead):
+                if behind or ahead:
                     div = f": -{behind}/+{ahead}"
                 fg = "red" if div else "green"
                 branches.append(f"[{fg}]\\[{branch}" + div + f"][/{fg}]")
@@ -119,10 +120,9 @@ def list(rootdir, index):
                 branches.append(f"[bold red]\\[{branch}: ×][/bold red]")
 
         repo_line = f"[bold]{repo}[/bold]" if status_count else f"{repo}"
-        table.add_row(
-            " ".join(status), repo_line, " ".join(branches)
-        )
+        table.add_row(" ".join(status), repo_line, " ".join(branches))
     console.print(table)
+
 
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
