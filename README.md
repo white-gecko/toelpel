@@ -8,4 +8,4 @@ It provides four sub-commands:
 - `list`: List all repositories in an index with their respective status.
 - `clone`: Clone all repositories from an index relative to the given root directory.
 
-For each git repositories it checks its synchronicity with its configures upstreams.
+For each git repositories it checks its synchronicity with its configured upstreams.
