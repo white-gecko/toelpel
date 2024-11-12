@@ -4,9 +4,26 @@ from rdflib.namespace import Namespace, RDF
 from loguru import logger
 from click import File
 from pathlib import Path
+from typing import Optional
 
 GW = Namespace("https://git-watch/")
 RELPATH = "urn:relpath:"
+INDEX_DEFAULT_NAME = "workspaces.ttl"
+
+def discover_index(rootdir: Path | None = None):
+    """Discover an index file `workspaces.ttl` in the provided rootdir or the current directory or its closesed parent."""
+    if rootdir is not None:
+        index = rootdir / INDEX_DEFAULT_NAME
+        return index if index.exists() else None
+
+    for path in [Path.cwd(), *Path.cwd().parents]:
+        index = path / INDEX_DEFAULT_NAME
+        if index.exists():
+            return index
+        path = path.parent
+    logger.error("Reached root, but found not index.")
+    return None
+
 
 
 class WatchStore:
