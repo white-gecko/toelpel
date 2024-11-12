@@ -162,7 +162,9 @@ def clone(rootdir, index, all, repository):
 
     for repo in git_repos:
         repo.path.mkdir(parents=True, exist_ok=True)
-        repo.clone()
+        remotes = dict(store.get_remotes(repo))
+        logger.debug(remotes)
+        repo.clone(remotes)
         repo.setup()
 
 

@@ -60,3 +60,9 @@ class WatchStore:
             self.graph.add((repo_resource, GW["remote"], repo_resource_remote))
             for url, direction in remote_dict.items():
                 self.graph.add((repo_resource_remote, GW[direction], URIRef(url)))
+
+    def get_remotes(self, repo: git):
+        for _, _, remote in self.graph.triples((self.get_relpath(repo.path), GW["remote"], None)):
+            for _, _, push_url in self.graph.triples((remote, GW["push"], None)):
+                remote_name = str(remote).rsplit(":", 1)[1]
+                yield remote_name, {push_url: "push"}
