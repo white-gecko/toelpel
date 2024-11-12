@@ -61,10 +61,10 @@ def scan(rootdir, index):
     store.list_to_graph(git_repos)
 
 
-@cli.command()
+@cli.command("list")
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("r"))
-def list(rootdir, index):
+def list_repos(rootdir, index):
     """List all repositories in an index with their respective status."""
 
     console = Console()
