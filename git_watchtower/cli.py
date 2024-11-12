@@ -1,4 +1,5 @@
 import click
+from click.shell_completion import CompletionItem
 from sys import stderr
 from os import walk
 from subprocess import run, DEVNULL
@@ -7,7 +8,7 @@ from loguru import logger
 from rich.console import Console
 from rich.table import Table
 from .git import git
-from .store import WatchStore
+from .store import WatchStore, discover_index
 
 
 @click.group()
@@ -123,17 +124,41 @@ def list(rootdir, index):
         table.add_row(" ".join(status), repo_line, " ".join(branches))
     console.print(table)
 
+def complete_repository(ctx, param, incomplete):
+    index = discover_index()
+    store = WatchStore(index, index.parent)
+
+    current_list = [k.path.relative_to(Path.cwd()) for k in store.graph_to_list() if k.path.is_relative_to(Path.cwd())]
+    return [str(k) for k in current_list if str(k).startswith(incomplete)]
 
 @cli.command()
-@click.argument("rootdir", type=click.Path(exists=True))
-@click.option("-i", "--index", type=click.File("r"))
-def clone(rootdir, index):
-    """Clone all repositories from an index relative to the given root directory."""
+@click.argument("repository", required=False, shell_complete=complete_repository)
+@click.option("--all", default=False, help="Clone all repositories")
+@click.option("-r", "--rootdir", default=None, type=click.Path(exists=True))
+@click.option("-i", "--index", default=None, type=click.File("r"))
+def clone(rootdir, index, all, repository):
+    """Clone repositories from an index.
+    If rootdir is given, the are cloned relative to the given root directory."""
+
+    logger.debug(f"repository: {repository}")
+
+    if not all and repository is None:
+        logger.error("You need to specify a repository or explicitely set --all if you realy want to initialize all repositories.")
+        return False
+
+    if index is None:
+        index = discover_index(rootdir)
+    if rootdir is None:
+        rootdir = index.parent
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
+    logger.debug(list(git_repos))
 
-    logger.debug(git_repos)
+    repository = Path.cwd() / repository
+
+    git_repos = [repo for repo in git_repos if repo.path == repository]
+
     for repo in git_repos:
         repo.path.mkdir(parents=True, exist_ok=True)
         repo.clone()
