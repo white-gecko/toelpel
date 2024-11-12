@@ -35,6 +35,10 @@ class git:
                 self._remotes[values[0]][values[1]] = values[2][1:-1]
         return self._remotes
 
+    @remotes.setter
+    def remotes(self, remotes_dict):
+        self._remotes = dict(remotes_dict)
+
     @property
     def branches(self):
         result = run(
@@ -131,10 +135,8 @@ class git:
         )
 
     def clone(self, remotes = None):
-        if remotes is None:
-            remotes = self.remotes["origin"]
-        if remotes.keys():
-            origin = list(remotes["origin"].keys())[0]
+        if self.remotes.keys():
+            origin = list(self.remotes["origin"].keys())[0]
             run(
                 ["git", "-C", self.path, "clone", origin, "."],
                 encoding="utf-8",
@@ -142,9 +144,7 @@ class git:
             )
 
     def setup(self):
-        for remote, remote_dict in self.remotes["origin"].items():
-            if remote == "origin":
-                continue
+        for remote, remote_dict in self.remotes.items():
             for url, direction in remote_dict.items():
                 run(
                     ["git", "-C", self.path, "remote", "add", remote, url],
