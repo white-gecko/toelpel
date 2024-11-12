@@ -23,3 +23,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 git-watchtower = "git_watchtower.cli:cli"
+gto = "git_watchtower.cli:cli"
