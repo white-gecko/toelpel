@@ -150,10 +150,11 @@ def clone(rootdir, index, all, repository):
         index = discover_index(rootdir)
     if rootdir is None:
         rootdir = index.parent
+    logger.debug(f"index: {index}")
+    logger.debug(f"rootdir: {rootdir}")
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
-    logger.debug(list(git_repos))
 
     repository = Path.cwd() / repository
 
