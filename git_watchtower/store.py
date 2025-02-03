@@ -21,7 +21,7 @@ def discover_index(rootdir: Path | None = None):
         if index.exists():
             return index
         path = path.parent
-    logger.error("Reached root, but found not index.")
+    logger.error("Reached root, but found no index.")
     return None
 
 
