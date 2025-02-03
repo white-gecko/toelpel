@@ -1,19 +1,14 @@
 from git_watchtower.store import WatchStore, discover_index
+from pathlib import Path
+import os
+from shutil import copyfile
 
-CONTENT = """
-@prefix gwa: <https://git-watch/> .
-
-<urn:relpath:space/simpsons> a gwa:repo ;
-    gwa:remote <urn:relpath:space/simpsons#remote:origin> .
-
-<urn:relpath:space/simpsons#remote:origin> gwa:push <git@github.com:white-gecko/simpsons.git> .
-"""
+test_directory = Path(os.path.dirname(__file__))
 
 
 def test_discover_index_rootdir_exists(tmp_path):
     p = tmp_path / "workspaces.ttl"
-    p.write_text(CONTENT, encoding="utf-8")
-
+    copyfile(test_directory / "assets" / "example_index.ttl", p)
     index = discover_index(tmp_path)
 
     assert index == p
@@ -29,7 +24,7 @@ def test_discover_index_rootdir_missing(tmp_path):
 
 def test_watch_store(tmp_path):
     p = tmp_path / "workspaces.ttl"
-    p.write_text(CONTENT, encoding="utf-8")
+    copyfile(test_directory / "assets" / "example_index.ttl", p)
     ws = WatchStore(index=p, base=tmp_path)
     lst = ws.graph_to_list()
     assert len(list(lst)) == 1
