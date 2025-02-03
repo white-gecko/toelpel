@@ -1,4 +1,4 @@
-# Git🗼Watchtower
+# Git🗼Overview
 
 This tool should facilitate the management of multiple Git repositories by providing an overview.
 
