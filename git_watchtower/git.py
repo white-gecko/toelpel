@@ -1,6 +1,6 @@
-from subprocess import run, DEVNULL
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+from subprocess import DEVNULL, run
 
 
 class git:
@@ -134,7 +134,7 @@ class git:
             capture_output=True,
         )
 
-    def clone(self, remotes = None):
+    def clone(self, remotes=None):
         if self.remotes.keys():
             origin = list(self.remotes["origin"].keys())[0]
             run(

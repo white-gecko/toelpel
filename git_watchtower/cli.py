@@ -1,12 +1,13 @@
-import click
-from click.shell_completion import CompletionItem
-from sys import stderr
 from os import walk
-from subprocess import run, DEVNULL
 from pathlib import Path
+from subprocess import DEVNULL, run
+from sys import stderr
+
+import click
 from loguru import logger
 from rich.console import Console
 from rich.table import Table
+
 from .git import git
 from .store import WatchStore, discover_index
 
@@ -124,12 +125,18 @@ def list_repos(rootdir, index):
         table.add_row(" ".join(status), repo_line, " ".join(branches))
     console.print(table)
 
+
 def complete_repository(ctx, param, incomplete):
     index = discover_index()
     store = WatchStore(index, index.parent)
 
-    current_list = [k.path.relative_to(Path.cwd()) for k in store.graph_to_list() if k.path.is_relative_to(Path.cwd())]
+    current_list = [
+        k.path.relative_to(Path.cwd())
+        for k in store.graph_to_list()
+        if k.path.is_relative_to(Path.cwd())
+    ]
     return [str(k) for k in current_list if str(k).startswith(incomplete)]
+
 
 @cli.command()
 @click.argument("repository", required=False, shell_complete=complete_repository)
@@ -143,7 +150,9 @@ def clone(rootdir, index, all, repository):
     logger.debug(f"repository: {repository}")
 
     if not all and repository is None:
-        logger.error("You need to specify a repository or explicitely set --all if you realy want to initialize all repositories.")
+        logger.error(
+            "You need to specify a repository or explicitely set --all if you realy want to initialize all repositories."
+        )
         return False
 
     if index is None:
