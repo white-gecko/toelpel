@@ -1,0 +1,17 @@
+version: '3'
+
+tasks:
+  default:
+    desc: List all tasks
+    cmds:
+      - task -l
+
+  install:
+    desc: Install the dependencies
+    cmds:
+      - poetry install
+
+  test:
+    desc: Run the tests
+    cmds:
+      - poetry run pytest
