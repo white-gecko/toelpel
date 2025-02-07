@@ -76,19 +76,21 @@ def test_index(tmp_path):
 
 
 def test_clone(tmp_path):
-    """Test for a index and a given target root directory that all repositories from the index are correctly created and cloned."""
+    """Test for an index and a given target root directory that all repositories from the index are correctly created and cloned."""
     remotes_path = tmp_path / "remotes"
     simpsons_path = remotes_path / "simpsons"
     workspace = tmp_path / "workspace"
     index = workspace / "workspace.ttl"
 
+    workspace.mkdir()
     run(["git", "init", simpsons_path], stderr=DEVNULL)
-    copytree(examples_path / "repo_content", simpsons_path)
+    copytree(examples_path / "repo_content", simpsons_path, dirs_exist_ok=True)
     copyfile(examples_path / "index_local.ttl", index)
 
     runner = CliRunner()
-    result = runner.invoke(cli, ["index", str(workspace), "--index", str(index)])
+    result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
     print(result.stdout)
+
     assert result.exit_code == 0
     assert (workspace / "space" / "simpsons").is_dir()
     assert (workspace / "space" / "simpsons" / ".git").is_dir()
