@@ -141,8 +141,12 @@ def complete_repository(ctx, param, incomplete):
 @cli.command()
 @click.argument("repository", required=False, shell_complete=complete_repository)
 @click.option("--all", is_flag=True, default=False, help="Clone all repositories")
-@click.option("-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path))
-@click.option("-i", "--index", default=None, type=click.Path(exists=True, path_type=Path))
+@click.option(
+    "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)
+)
+@click.option(
+    "-i", "--index", default=None, type=click.Path(exists=True, path_type=Path)
+)
 def clone(rootdir, index, all, repository):
     """Clone repositories from an index.
     If rootdir is given, they are cloned relative to the given root directory."""
