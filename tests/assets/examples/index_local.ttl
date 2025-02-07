@@ -3,4 +3,4 @@
 <urn:relpath:space/simpsons> a gwa:repo ;
     gwa:remote <urn:relpath:space/simpsons#remote:origin> .
 
-<urn:relpath:space/simpsons#remote:origin> gwa:push <git@github.com:white-gecko/simpsons.git> .
+<urn:relpath:space/simpsons#remote:origin> gwa:push <urn:relpath:../../../remotes/simpsons> .

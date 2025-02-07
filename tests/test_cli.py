@@ -7,7 +7,8 @@ from shutil import copyfile
 from subprocess import DEVNULL, run
 from rdflib import Graph
 
-test_directory = Path(os.path.dirname(__file__))
+test_path = Path(os.path.dirname(__file__))
+examples_path = test_path / "assets" / "examples"
 
 
 def test_index(tmp_path):
