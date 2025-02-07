@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 from shutil import copyfile
 
-test_directory = Path(os.path.dirname(__file__))
+test_path = Path(os.path.dirname(__file__))
 examples_path = test_path / "assets" / "examples"
 
 
