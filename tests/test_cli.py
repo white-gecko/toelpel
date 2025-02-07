@@ -29,15 +29,18 @@ def test_index(tmp_path):
     assert result.exit_code == 0
     assert index.is_file()
 
-    g = Graph().parse(format='turtle', source=index)
-    assert g.query("""
+    g = Graph().parse(format="turtle", source=index)
+    assert g.query(
+        """
         PREFIX gw: <https://git-watch/>
 
         ask {
             ?repo a gw:repo .
         }
-        """)
-    assert g.query("""
+        """
+    )
+    assert g.query(
+        """
         PREFIX gw: <https://git-watch/>
 
         ask {
@@ -45,24 +48,32 @@ def test_index(tmp_path):
                 gw:remote ?remote .
             ?remote gw:push ?url .
         }
-        """)
-    assert g.query("""
+        """
+    )
+    assert g.query(
+        """
         PREFIX gw: <https://git-watch/>
 
         ask {
             ?repo a gw:repo ;
                 gw:remote ?remote .
-            ?remote gw:push <""" + remote_b + """> .
+            ?remote gw:push <"""
+        + remote_b
+        + """> .
         }
-        """)
-    assert g.query("""
+        """
+    )
+    assert g.query(
+        """
         PREFIX gw: <https://git-watch/>
 
         ask {
             <urn:relpath:repo_a> a gw:repo .
             <urn:relpath:repo_b> a gw:repo .
         }
-        """)
+        """
+    )
+
 
 def test_clone(tmp_path):
     """Test for a index and a given target root directory that all repositories from the index are correctly created and cloned."""
