@@ -145,7 +145,7 @@ def complete_repository(ctx, param, incomplete):
 @click.option("-i", "--index", default=None, type=click.File("r"))
 def clone(rootdir, index, all, repository):
     """Clone repositories from an index.
-    If rootdir is given, the are cloned relative to the given root directory."""
+    If rootdir is given, they are cloned relative to the given root directory."""
 
     logger.debug(f"repository: {repository}")
 
