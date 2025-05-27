@@ -1,6 +1,6 @@
-@prefix gwa: <https://git-watch/> .
+@prefix toel: <https://toelpel/> .
 
-<urn:relpath:space/simpsons> a gwa:repo ;
-    gwa:remote <urn:relpath:space/simpsons#remote:origin> .
+<urn:relpath:space/simpsons> a toel:repo ;
+    toel:remote <urn:relpath:space/simpsons#remote:origin> .
 
-<urn:relpath:space/simpsons#remote:origin> gwa:push <urn:relpath:../../../remotes/simpsons> .
+<urn:relpath:space/simpsons#remote:origin> toel:push <urn:relpath:../../../remotes/simpsons> .

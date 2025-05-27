@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "git-watchtower"
+name = "toelpel"
 version = "0.1.0"
 description = ""
 authors = ["Natanael Arndt <arndtn@gmail.com>"]
@@ -60,5 +60,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-git-overview = "git_watchtower.cli:cli"
-gow = "git_watchtower.cli:cli"
+tolpel = "toelpel.cli:cli"
+toelpel = "toelpel.cli:cli"

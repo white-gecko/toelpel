@@ -2,6 +2,7 @@ from os import walk
 from pathlib import Path
 from subprocess import DEVNULL, run
 from sys import stderr
+from shutil import copyfile, copytree
 
 import click
 from loguru import logger
@@ -14,7 +15,7 @@ from .store import WatchStore, discover_index
 
 @click.group()
 def cli():
-    """Git🗼Watchtower
+    """Tölpel
 
     Get an overview on your git repositories and manage them from one place.
     """
@@ -139,7 +140,11 @@ def complete_repository(ctx, param, incomplete):
 
 
 @cli.command()
-@click.argument("repository", required=False, shell_complete=complete_repository)
+@click.argument(
+    "repository",
+    required=False,
+    shell_complete=complete_repository,
+)
 @click.option("--all", is_flag=True, default=False, help="Clone all repositories")
 @click.option(
     "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)
@@ -149,6 +154,7 @@ def complete_repository(ctx, param, incomplete):
 )
 def clone(rootdir, index, all, repository):
     """Clone repositories from an index.
+    If the optional argument REPOSITORY is given as a relative path only this explicity repository is cloned.
     If rootdir is given, they are cloned relative to the given root directory."""
 
     logger.debug(f"repository: {repository}")
@@ -166,12 +172,17 @@ def clone(rootdir, index, all, repository):
     logger.debug(f"index: {index}")
     logger.debug(f"rootdir: {rootdir}")
 
+
+    if(index.parent != rootdir):
+        copyfile(index, rootdir / "workspace.ttl")
+        index = rootdir / "workspace.ttl"
+
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
 
-    repository = Path.cwd() / repository
-
-    git_repos = [repo for repo in git_repos if repo.path == repository]
+    if repository is not None:
+        repository_path = Path.cwd() / repository
+        git_repos = [repo for repo in git_repos if repo.path == repository_path]
 
     for repo in git_repos:
         repo.path.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
-from git_watchtower.cli import cli
-from git_watchtower.store import WatchStore, discover_index
+from toelpel.cli import cli
+from toelpel.store import WatchStore, discover_index
 from click.testing import CliRunner
 from pathlib import Path
 import os
@@ -32,32 +32,32 @@ def test_index(tmp_path):
     g = Graph().parse(format="turtle", source=index)
     assert g.query(
         """
-        PREFIX gw: <https://git-watch/>
+        PREFIX toel: <https://toelpel/>
 
         ask {
-            ?repo a gw:repo .
+            ?repo a toel:repo .
         }
         """
     )
     assert g.query(
         """
-        PREFIX gw: <https://git-watch/>
+        PREFIX toel: <https://toelpel/>
 
         ask {
-            ?repo a gw:repo ;
-                gw:remote ?remote .
-            ?remote gw:push ?url .
+            ?repo a toel:repo ;
+                toel:remote ?remote .
+            ?remote toel:push ?url .
         }
         """
     )
     assert g.query(
         """
-        PREFIX gw: <https://git-watch/>
+        PREFIX toel: <https://toelpel/>
 
         ask {
-            ?repo a gw:repo ;
-                gw:remote ?remote .
-            ?remote gw:push <"""
+            ?repo a toel:repo ;
+                toel:remote ?remote .
+            ?remote toel:push <"""
         + remote_b
         + """> .
         }
@@ -65,11 +65,11 @@ def test_index(tmp_path):
     )
     assert g.query(
         """
-        PREFIX gw: <https://git-watch/>
+        PREFIX toel: <https://toelpel/>
 
         ask {
-            <urn:relpath:repo_a> a gw:repo .
-            <urn:relpath:repo_b> a gw:repo .
+            <urn:relpath:repo_a> a toel:repo .
+            <urn:relpath:repo_b> a toel:repo .
         }
         """
     )

@@ -1,4 +1,4 @@
-from git_watchtower.store import WatchStore, discover_index
+from toelpel.store import WatchStore, discover_index
 from pathlib import Path
 import os
 from shutil import copyfile

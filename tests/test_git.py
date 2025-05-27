@@ -1,4 +1,4 @@
-from git_watchtower.git import git
+from toelpel.git import git
 from pathlib import Path
 import os
 from shutil import copyfile

@@ -7,7 +7,7 @@ from rdflib.namespace import RDF, Namespace
 
 from .git import git
 
-GW = Namespace("https://git-watch/")
+TOEL = Namespace("https://toelpel/")
 RELPATH = "urn:relpath:"
 INDEX_DEFAULT_NAME = "workspaces.ttl"
 
@@ -60,7 +60,7 @@ class WatchStore:
         return self.graph
 
     def graph_to_list(self) -> list:
-        for repo, _, _ in self.graph.triples((None, RDF.type, GW["repo"])):
+        for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
             yield git(self.get_abspath(repo))
 
     def add_repo_to_graph(self, repo: git):
@@ -68,17 +68,17 @@ class WatchStore:
             f"write triple for {repo}: {repo.path}: {repo.path.resolve()}: {self.get_relpath(repo.path)}"
         )
         repo_resource = self.get_relpath(repo.path)
-        self.graph.add((repo_resource, RDF.type, GW["repo"]))
+        self.graph.add((repo_resource, RDF.type, TOEL["repo"]))
         for remote, remote_dict in repo.remotes.items():
             repo_resource_remote = URIRef(repo_resource + f"#remote:{remote}")
-            self.graph.add((repo_resource, GW["remote"], repo_resource_remote))
+            self.graph.add((repo_resource, TOEL["remote"], repo_resource_remote))
             for url, direction in remote_dict.items():
-                self.graph.add((repo_resource_remote, GW[direction], URIRef(url)))
+                self.graph.add((repo_resource_remote, TOEL[direction], URIRef(url)))
 
     def get_remotes(self, repo: git):
         for _, _, remote in self.graph.triples(
-            (self.get_relpath(repo.path), GW["remote"], None)
+            (self.get_relpath(repo.path), TOEL["remote"], None)
         ):
-            for _, _, push_url in self.graph.triples((remote, GW["push"], None)):
+            for _, _, push_url in self.graph.triples((remote, TOEL["push"], None)):
                 remote_name = str(remote).rsplit(":", 1)[1]
                 yield remote_name, {push_url: "push"}
