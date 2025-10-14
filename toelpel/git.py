@@ -88,6 +88,7 @@ class git:
 
     @property
     def ignorred_dirt(self):
+        """Get existing files that are ignored."""
         result = run(
             ["git", "-C", self.path, "status", "--ignored", "--porcelain"],
             encoding="utf-8",
