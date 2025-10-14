@@ -1,8 +1,8 @@
 from os import walk
 from pathlib import Path
+from shutil import copyfile
 from subprocess import DEVNULL, run
 from sys import stderr
-from shutil import copyfile, copytree
 
 import click
 from loguru import logger
@@ -172,8 +172,7 @@ def clone(rootdir, index, all, repository):
     logger.debug(f"index: {index}")
     logger.debug(f"rootdir: {rootdir}")
 
-
-    if(index.parent != rootdir):
+    if index.parent != rootdir:
         copyfile(index, rootdir / "workspace.ttl")
         index = rootdir / "workspace.ttl"
 
