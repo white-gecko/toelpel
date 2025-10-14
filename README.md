@@ -16,6 +16,13 @@ It also provides a permanent monitoring service, that watches your git repositor
 - periodically performs a `scan`? for the beginning
   - later it could also set filesystem watchers and only scan the directories in which changes happen
 
+## TODO and Ideas
+
+- Detect repositories that are not part of the index.
+- Provide ids for each workspace.
+- Also index remote services, e.g. gitolite, github, and gitlab.
+- A default remote service, that allows to create new repositories in this service and configure them as remote.
+
 ## The Name?
 
 *Tölpel* (English *gannet*) are birds that look out from high above the see for fish and then hut by diving into the see. Also they breeding in colonies. The German word *Tölpel* can be translated as *git*.
