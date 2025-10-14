@@ -1,7 +1,5 @@
-from toelpel.git import git
-from pathlib import Path
 import os
-from shutil import copyfile
+from pathlib import Path
 
 test_directory = Path(os.path.dirname(__file__))
 

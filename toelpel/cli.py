@@ -43,7 +43,7 @@ def index(rootdir, index, cache):
             result = run(["git", "-C", relative_path, "rev-parse"], stderr=DEVNULL)
             logger.debug(f"path: {subdir_path / dir_path}, result: {result.returncode}")
             repo = git(subdir_path / dir_path)
-            if repo.isRepo:
+            if repo.is_repo:
                 git_repos.append(repo)
                 dirs.remove(dir)
                 logger.debug("DEL")
@@ -83,7 +83,7 @@ def list_repos(rootdir, index):
         status = []
         branches = []
         status_count = 0
-        if not repo.isRepo:
+        if not repo.is_repo:
             table.add_row("[bold]not a repo[/bold]", f"[bold]{repo}[/bold]", "")
             continue
         if repo.dirty:

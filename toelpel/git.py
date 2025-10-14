@@ -15,7 +15,7 @@ class git:
         return str(self.path)
 
     @property
-    def isRepo(self) -> bool:
+    def is_repo(self) -> bool:
         return (
             run(["git", "-C", self.path, "rev-parse"], stderr=DEVNULL).returncode == 0
         )

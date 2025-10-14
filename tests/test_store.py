@@ -1,7 +1,8 @@
-from toelpel.store import WatchStore, discover_index
-from pathlib import Path
 import os
+from pathlib import Path
 from shutil import copyfile
+
+from toelpel.store import WatchStore, discover_index
 
 test_path = Path(os.path.dirname(__file__))
 examples_path = test_path / "assets" / "examples"
@@ -20,7 +21,7 @@ def test_discover_index_rootdir_missing(tmp_path):
 
     index = discover_index(tmp_path)
 
-    assert index == None
+    assert index is None
 
 
 def test_watch_store(tmp_path):
