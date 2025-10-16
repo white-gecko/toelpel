@@ -1,21 +1,20 @@
-[tool.poetry]
-name = "toelpel"
-version = "0.1.0"
-description = ""
-authors = ["Natanael Arndt <arndtn@gmail.com>"]
-license = "GPLv3+"
-readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-click = "^8.1.7"
-loguru = "^0.7.2"
-pyyaml = "^6.0.1"
-rdflib = "^7.0.0"
-rich = "^13.7.1"
+[project]
+name = "toelpel"
+description = ""
+license = "GPLv3+"
+version = "0.1.0"
+readme = "README.md"
+authors = [{name = "Natanael Arndt", email = "arndtn@gmail.com"}]
+requires-python = '>=3.12,<4.0'
+dependencies = ['click (>=8.1.7,<9.0.0)', 'loguru (>=0.7.2,<0.8.0)', 'pyyaml (>=6.0.1,<7.0.0)', 'rdflib (>=7.0.0,<8.0.0)', 'rich (>=13.7.1,<14.0.0)', "pytest-git (>=1.8.0,<2.0.0)"]
+
+[project.scripts]
+tolpel = "toelpel.cli:cli"
+toelpel = "toelpel.cli:cli"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.2.1"
+ruff = "^0.14.0"
 pytest = "^8.3.4"
 
 [tool.ruff]
@@ -59,6 +58,3 @@ lint.select = [
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]
-tolpel = "toelpel.cli:cli"
-toelpel = "toelpel.cli:cli"
