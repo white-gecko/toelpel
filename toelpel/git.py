@@ -2,6 +2,8 @@ from collections import defaultdict
 from pathlib import Path
 from subprocess import DEVNULL, run
 
+from loguru import logger
+
 
 class git:
     def __init__(self, repo: Path):
@@ -22,7 +24,29 @@ class git:
 
     @property
     def remotes(self):
-        """A dictionary of the configured remotes of the repository."""
+        """A dictionary of the configured remotes of the repository.
+
+        In the `git remotes -v` output the structure is e.g.:
+
+        ```
+        origin	git@github.com:white-gecko/toelpel.git (fetch)
+        origin	git@github.com:white-gecko/toelpel.git (push)
+        ```
+
+        This structure of the internal remotes dict is:
+
+        ```
+        {
+            "origin": {
+                "fetch": "git@github.com:white-gecko/toelpel.git",
+                "push": "git@github.com:white-gecko/toelpel.git",
+            },
+        }
+        ```
+
+        I no remotes were set explicitely, the remotes are initialized from the
+        git repository and then stored in `self._remotes`.
+        """
         if not self._remotes:
             result = run(
                 ["git", "-C", self.path, "remote", "-v"],
@@ -32,11 +56,15 @@ class git:
             self._remotes = defaultdict(dict)
             for line in result.stdout.splitlines():
                 values = line.split()
-                self._remotes[values[0]][values[1]] = values[2][1:-1]
+                self._remotes[values[0]][values[2][1:-1]] = values[1]
         return self._remotes
 
     @remotes.setter
     def remotes(self, remotes_dict):
+        """Set remotes.
+
+        See the getter method (`@property`) for the dict structure.
+        """
         self._remotes = dict(remotes_dict)
 
     @property
@@ -137,18 +165,25 @@ class git:
 
     def clone(self, remotes=None):
         if self.remotes.keys():
-            origin = list(self.remotes["origin"].keys())[0]
-            run(
+            origin = self.remotes["origin"]["fetch"]
+            res = run(
                 ["git", "-C", self.path, "clone", origin, "."],
                 encoding="utf-8",
                 capture_output=True,
             )
+            logger.debug(res)
 
     def setup(self):
+        def set_remote(*args):
+            run(
+                ["git", "-C", self.path, "remote", "add", *args],
+                encoding="utf-8",
+                capture_output=True,
+            )
+
         for remote, remote_dict in self.remotes.items():
-            for url, direction in remote_dict.items():
-                run(
-                    ["git", "-C", self.path, "remote", "add", remote, url],
-                    encoding="utf-8",
-                    capture_output=True,
-                )
+            if remote_dict["push"] == remote_dict["fetch"]:
+                set_remote(remote, remote_dict["push"])
+            else:
+                for mirror, url in remote_dict.items():
+                    set_remote("--mirror", mirror, remote, url)

@@ -27,6 +27,16 @@ def discover_index(rootdir: Path | None = None):
     return None
 
 
+def uri_to_path(uri):
+    if isinstance(uri, URIRef):
+        uri_str = str(uri)
+        if uri_str[0:12] == "urn:relpath:":
+            return uri_str[12:]
+        elif uri_str[0:5] == "path:":
+            return uri_str[5:]
+    return uri
+
+
 class WatchStore:
     """A WatchStore is adatastructure layered on the directory tree of the collection of git projects that allows to interact with each repository."""
 
@@ -72,13 +82,22 @@ class WatchStore:
         for remote, remote_dict in repo.remotes.items():
             repo_resource_remote = URIRef(repo_resource + f"#remote:{remote}")
             self.graph.add((repo_resource, TOEL["remote"], repo_resource_remote))
-            for url, direction in remote_dict.items():
-                self.graph.add((repo_resource_remote, TOEL[direction], URIRef(url)))
+            for mirror, url in remote_dict.items():
+                self.graph.add((repo_resource_remote, TOEL[mirror], URIRef(url)))
 
     def get_remotes(self, repo: git):
         for _, _, remote in self.graph.triples(
             (self.get_relpath(repo.path), TOEL["remote"], None)
         ):
-            for _, _, push_url in self.graph.triples((remote, TOEL["push"], None)):
-                remote_name = str(remote).rsplit(":", 1)[1]
-                yield remote_name, {push_url: "push"}
+            remote_name = str(remote).rsplit(":", 1)[1]
+            fetch_url = self.graph.value(remote, TOEL["fetch"])
+            push_url = self.graph.value(remote, TOEL["push"]) or fetch_url
+            if fetch_url is None:
+                fetch_url = push_url
+            logger.debug(push_url)
+            logger.debug(fetch_url)
+            push_url = uri_to_path(push_url)
+            fetch_url = uri_to_path(fetch_url)
+            logger.debug(fetch_url)
+            logger.debug(push_url)
+            yield remote_name, {"fetch": push_url, "push": push_url}

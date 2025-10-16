@@ -1,12 +1,14 @@
-from toelpel.cli import cli
-from toelpel.store import WatchStore, discover_index
-from click.testing import CliRunner
-from pathlib import Path
 import os
+from pathlib import Path
 from shutil import copyfile, copytree
-
 from subprocess import DEVNULL, run
+from textwrap import dedent
+
+from click.testing import CliRunner
+from loguru import logger
 from rdflib import Graph
+
+from toelpel.cli import cli
 
 test_path = Path(os.path.dirname(__file__))
 examples_path = test_path / "assets" / "examples"
@@ -76,16 +78,75 @@ def test_index(tmp_path):
 
 
 def test_clone(tmp_path):
-    """Test for an index and a given target root directory that all repositories from the index are correctly created and cloned."""
+    """Given an index and a target root directory, test that all repositories from the
+    index are correctly created and cloned."""
     remotes_path = tmp_path / "remotes"
     simpsons_path = remotes_path / "simpsons"
     workspace = tmp_path / "workspace"
     index = workspace / "workspace.ttl"
 
     workspace.mkdir()
+    logger.debug(simpsons_path)
     run(["git", "init", simpsons_path], stderr=DEVNULL)
     copytree(examples_path / "repo_content", simpsons_path, dirs_exist_ok=True)
+    run(["git", "-C", simpsons_path, "add", "."], stderr=DEVNULL)
+    run(
+        [
+            "git",
+            "-C",
+            simpsons_path,
+            "-c",
+            'user.name="Your Name"',
+            "-c",
+            'user.email="you@example.com"',
+            "commit",
+            "-m",
+            "init",
+        ],
+        stderr=DEVNULL,
+    )
+    logger.debug(examples_path)
+    logger.debug(index)
     copyfile(examples_path / "index_local.ttl", index)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
+    print(result.stdout)
+
+    assert result.exit_code == 0
+    assert (workspace / "space" / "simpsons").is_dir()
+    assert (workspace / "space" / "simpsons" / ".git").is_dir()
+    assert (workspace / "space" / "simpsons" / "README.md").is_file()
+
+
+def test_clone_fixture(tmp_path, git_repo):
+    """Given an index and a target root directory, test that all repositories from the
+    index are correctly created and cloned."""
+
+    path = git_repo.workspace
+    file = path / "README.md"
+    file.write_text("hello world!")
+    git_repo.run("git add README.md")
+    git_repo.api.index.commit("Initial commit")
+
+    workspace = tmp_path / "workspace"
+    index = workspace / "workspace.ttl"
+
+    workspace.mkdir()
+    logger.debug(index)
+    # TODO inject git_repo.uri as remote into the index
+
+    with open(index, mode="w") as index_file:
+        index_file.write(
+            dedent(f"""
+            @prefix toel: <https://toelpel/> .
+
+            <urn:relpath:space/simpsons> a toel:repo ;
+                toel:remote <urn:relpath:space/simpsons#remote:origin> .
+
+            <urn:relpath:space/simpsons#remote:origin> toel:push <path:{git_repo.uri}> .
+            """)
+        )
 
     runner = CliRunner()
     result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
