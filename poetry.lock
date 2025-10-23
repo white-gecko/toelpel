@@ -193,7 +193,7 @@ version = "3.2.5"
 description = "pyparsing - Classes and methods to define and execute parsing grammars"
 optional = false
 python-versions = ">=3.9"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "pyparsing-3.2.5-py3-none-any.whl", hash = "sha256:e38a4f02064cf41fe6593d328d0512495ad1f3d8a91c4f73fc401b3079a59a5e"},
     {file = "pyparsing-3.2.5.tar.gz", hash = "sha256:2df8d5b7b2802ef88e8d016a2eb9c7aeaa923529cd251ed0fe4608275d4105b6"},
@@ -343,12 +343,27 @@ files = [
 ]
 
 [[package]]
+name = "query-collection"
+version = "0.1.6"
+description = "This should be an interface and implementation of a collection that holds SPARQL 1.1 queries."
+optional = false
+python-versions = "<4.0.0,>=3.9"
+groups = ["dev"]
+files = [
+    {file = "query_collection-0.1.6-py3-none-any.whl", hash = "sha256:e5bef31f53f82408cc79ba7182fdf66bf93dfe312d813294c541b3677caa7741"},
+    {file = "query_collection-0.1.6.tar.gz", hash = "sha256:e26b681d0029b531e8bd178573cce4aa8dbdf671a540c8758ce8776a33a0abe8"},
+]
+
+[package.dependencies]
+rdflib = ">=7.1.4,<9.0.0"
+
+[[package]]
 name = "rdflib"
 version = "7.2.1"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
 optional = false
 python-versions = ">=3.8.1"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "rdflib-7.2.1-py3-none-any.whl", hash = "sha256:1a175bc1386a167a42fbfaba003bfa05c164a2a3ca3cb9c0c97f9c9638ca6ac2"},
     {file = "rdflib-7.2.1.tar.gz", hash = "sha256:cf9b7fa25234e8925da8b1fb09700f8349b5f0f100e785fb4260e737308292ac"},
@@ -470,4 +485,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<4.0"
-content-hash = "98c6c503f87edef4cc79e2e96b3f3ba8b8c588a37865e51a7a565879f4fb034b"
+content-hash = "0508c10dee4bbb2b9d8158b09add32ff7b1facb5dfe25b4914554717169047f9"

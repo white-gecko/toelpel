@@ -1,0 +1,7 @@
+PREFIX toel: <https://toelpel/>
+
+ask {
+    ?repo a toel:repo ;
+        toel:remote ?remote .
+    ?remote toel:push ?url .
+}

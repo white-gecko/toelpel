@@ -1,0 +1,6 @@
+PREFIX toel: <https://toelpel/>
+
+ask {
+    <urn:relpath:repo_a> a toel:repo .
+    <urn:relpath:repo_b> a toel:repo .
+}

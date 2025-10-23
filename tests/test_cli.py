@@ -6,7 +6,8 @@ from textwrap import dedent
 
 from click.testing import CliRunner
 from loguru import logger
-from rdflib import Graph
+from query_collection import TemplateQueryCollection
+from rdflib import Graph, URIRef
 
 from toelpel.cli import cli
 
@@ -26,6 +27,14 @@ def git(repo_path, *args):
     return run(cmd, stderr=DEVNULL)
 
 
+def init_repo_with_dir(repo_path, source_dir=None):
+    """Initialize a repository with the contents of a given diectory."""
+    git(None, "init", repo_path)
+    copytree(source_dir, repo_path, dirs_exist_ok=True)
+    git(repo_path, "add", ".")
+    git(repo_path, "commit", "-m", "init")
+
+
 def test_index(tmp_path):
     """Test for a directory with git repositories, if an index is correctly created."""
     repo_a_path = tmp_path / "repo_a"
@@ -33,6 +42,9 @@ def test_index(tmp_path):
     index = tmp_path / "workspace.ttl"
     remote_b = "https://example.org/repo_a.git"
 
+    # prepare queries
+    tqc = TemplateQueryCollection()
+    tqc.loadFromDirectory("tests/assets/queries")
 
     # init repos
     git(None, "init", repo_a_path)
@@ -47,49 +59,10 @@ def test_index(tmp_path):
     assert index.is_file()
 
     g = Graph().parse(format="turtle", source=index)
-    assert g.query(
-        """
-        PREFIX toel: <https://toelpel/>
-
-        ask {
-            ?repo a toel:repo .
-        }
-        """
-    )
-    assert g.query(
-        """
-        PREFIX toel: <https://toelpel/>
-
-        ask {
-            ?repo a toel:repo ;
-                toel:remote ?remote .
-            ?remote toel:push ?url .
-        }
-        """
-    )
-    assert g.query(
-        """
-        PREFIX toel: <https://toelpel/>
-
-        ask {
-            ?repo a toel:repo ;
-                toel:remote ?remote .
-            ?remote toel:push <"""
-        + remote_b
-        + """> .
-        }
-        """
-    )
-    assert g.query(
-        """
-        PREFIX toel: <https://toelpel/>
-
-        ask {
-            <urn:relpath:repo_a> a toel:repo .
-            <urn:relpath:repo_b> a toel:repo .
-        }
-        """
-    )
+    assert g.query(**tqc.get("index_repos_exist").p())
+    assert g.query(**tqc.get("index_repos_have_remote").p())
+    assert g.query(**tqc.get("index_verify_repo_remote").p(remote_b=URIRef(remote_b)))
+    assert g.query(**tqc.get("index_repo_a_and_b_exist").p())
 
 
 def test_clone(tmp_path):
@@ -100,28 +73,12 @@ def test_clone(tmp_path):
     workspace = tmp_path / "workspace"
     index = workspace / "workspace.ttl"
 
+    # init remote repository
+    init_repo_with_dir(simpsons_path, examples_path / "repo_content")
+
+    # init empty workspace, with just an index
     workspace.mkdir()
-    logger.debug(simpsons_path)
-    run(["git", "init", simpsons_path], stderr=DEVNULL)
-    copytree(examples_path / "repo_content", simpsons_path, dirs_exist_ok=True)
-    run(["git", "-C", simpsons_path, "add", "."], stderr=DEVNULL)
-    run(
-        [
-            "git",
-            "-C",
-            simpsons_path,
-            "-c",
-            'user.name="Your Name"',
-            "-c",
-            'user.email="you@example.com"',
-            "commit",
-            "-m",
-            "init",
-        ],
-        stderr=DEVNULL,
-    )
-    logger.debug(examples_path)
-    logger.debug(index)
+    # TODO inject git_repo.uri as remote into the index
     copyfile(examples_path / "index_local.ttl", index)
 
     runner = CliRunner()

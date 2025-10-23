@@ -1,0 +1,5 @@
+PREFIX toel: <https://toelpel/>
+
+ask {
+    ?repo a toel:repo .
+}
