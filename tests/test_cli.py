@@ -37,6 +37,7 @@ def init_repo_with_dir(repo_path, source_dir=None):
 
 def test_index(tmp_path):
     """Test for a directory with git repositories, if an index is correctly created."""
+    # prepare paths
     repo_a_path = tmp_path / "repo_a"
     repo_b_path = tmp_path / "repo_b"
     index = tmp_path / "workspace.ttl"
@@ -68,6 +69,7 @@ def test_index(tmp_path):
 def test_clone(tmp_path):
     """Given an index and a target root directory, test that all repositories from the
     index are correctly created and cloned."""
+    # prepare paths
     remotes_path = tmp_path / "remotes"
     simpsons_path = remotes_path / "simpsons"
     workspace = tmp_path / "workspace"
@@ -81,10 +83,12 @@ def test_clone(tmp_path):
     # TODO inject git_repo.uri as remote into the index
     copyfile(examples_path / "index_local.ttl", index)
 
+    # execute clone command
     runner = CliRunner()
     result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
     print(result.stdout)
 
+    # verify the results
     assert result.exit_code == 0
     assert (workspace / "space" / "simpsons").is_dir()
     assert (workspace / "space" / "simpsons" / ".git").is_dir()
@@ -120,10 +124,12 @@ def test_clone_fixture(tmp_path, git_repo):
             """)
         )
 
+    # execute clone command
     runner = CliRunner()
     result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
     print(result.stdout)
 
+    # verify the results
     assert result.exit_code == 0
     assert (workspace / "space" / "simpsons").is_dir()
     assert (workspace / "space" / "simpsons" / ".git").is_dir()
