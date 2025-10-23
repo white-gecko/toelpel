@@ -14,6 +14,18 @@ test_path = Path(os.path.dirname(__file__))
 examples_path = test_path / "assets" / "examples"
 
 
+def git(repo_path, *args):
+    """Run a git command.
+    Set the repo_path to None, since the directory does not exist already.
+    """
+    cmd = ["git"]
+    if repo_path:
+        cmd += ["-C", repo_path]
+    cmd += ["-c", 'user.name="Your Name"', "-c", 'user.email="you@example.com"', *args]
+    logger.debug(cmd)
+    return run(cmd, stderr=DEVNULL)
+
+
 def test_index(tmp_path):
     """Test for a directory with git repositories, if an index is correctly created."""
     repo_a_path = tmp_path / "repo_a"
@@ -21,10 +33,13 @@ def test_index(tmp_path):
     index = tmp_path / "workspace.ttl"
     remote_b = "https://example.org/repo_a.git"
 
-    run(["git", "init", repo_a_path], stderr=DEVNULL)
-    run(["git", "init", repo_b_path], stderr=DEVNULL)
-    run(["git", "-C", repo_b_path, "remote", "add", "origin", remote_b], stderr=DEVNULL)
 
+    # init repos
+    git(None, "init", repo_a_path)
+    git(None, "init", repo_b_path)
+    git(repo_b_path, "remote", "add", "origin", remote_b)
+
+    # execute index command
     runner = CliRunner()
     result = runner.invoke(cli, ["index", str(tmp_path), "--index", str(index)])
     print(result.stdout)
