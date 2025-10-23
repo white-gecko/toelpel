@@ -86,7 +86,6 @@ def test_clone(tmp_path):
     # execute clone command
     runner = CliRunner()
     result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
-    print(result.stdout)
 
     # verify the results
     assert result.exit_code == 0
