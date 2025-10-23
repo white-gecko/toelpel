@@ -96,21 +96,21 @@ def test_clone(tmp_path):
 
 def test_clone_fixture(tmp_path, git_repo):
     """Given an index and a target root directory, test that all repositories from the
-    index are correctly created and cloned."""
-
+    index are correctly created and cloned. In this test the remote repository is
+    created with the git fixture."""
+    # prepare paths
     path = git_repo.workspace
-    file = path / "README.md"
-    file.write_text("hello world!")
-    git_repo.run("git add README.md")
-    git_repo.api.index.commit("Initial commit")
-
+    readme_file = path / "README.md"
     workspace = tmp_path / "workspace"
     index = workspace / "workspace.ttl"
 
-    workspace.mkdir()
-    logger.debug(index)
-    # TODO inject git_repo.uri as remote into the index
+    # init remote repository
+    readme_file.write_text("hello world!")
+    git_repo.run("git add README.md")
+    git_repo.api.index.commit("Initial commit")
 
+    # init empty workspace, with just an index
+    workspace.mkdir()
     with open(index, mode="w") as index_file:
         index_file.write(
             dedent(f"""
