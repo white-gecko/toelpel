@@ -13,7 +13,8 @@ INDEX_DEFAULT_NAME = "workspaces.ttl"
 
 
 def discover_index(rootdir: Path | None = None):
-    """Discover an index file `workspaces.ttl` in the provided rootdir or the current directory or its closesed parent."""
+    """Discover an index file `workspaces.ttl` in the provided rootdir or the current
+    directory or its closest parent."""
     if rootdir is not None:
         index = rootdir / INDEX_DEFAULT_NAME
         return index if index.exists() else None
