@@ -1,0 +1,10 @@
+@prefix toel: <https://toelpel/> .
+
+<path:repo_a> a toel:repo .
+
+<path:repo_b> a toel:repo ;
+    toel:remote <path:repo_b#remote:origin> .
+
+<path:repo_b#remote:origin> toel:fetch <path:../../../remotes/simpsons> ;
+    toel:push <path:../../../remotes/simpsons> .
+
