@@ -102,7 +102,7 @@ def test_scan_discover(tmp_path):
 
     # execute index command
     runner = CliRunner()
-    result = runner.invoke(cli, ["scan", "--discover", str(tmp_path), "--index", str(index)])
+    result = runner.invoke(cli, ["scan", "--discover", "--index", str(index), str(tmp_path)])
     logger.debug(result.stdout)
     assert result.exit_code == 0
     assert index.is_file()
