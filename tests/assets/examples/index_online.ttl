@@ -1,6 +1,6 @@
 @prefix toel: <https://toelpel/> .
 
-<urn:relpath:space/simpsons> a toel:repo ;
-    toel:remote <urn:relpath:space/simpsons#remote:origin> .
+<path:space/simpsons> a toel:repo ;
+    toel:remote <path:space/simpsons#remote:origin> .
 
-<urn:relpath:space/simpsons#remote:origin> toel:push <git@github.com:white-gecko/simpsons.git> .
+<path:space/simpsons#remote:origin> toel:push <git@github.com:white-gecko/simpsons.git> .
