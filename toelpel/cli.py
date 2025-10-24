@@ -59,13 +59,20 @@ def scan(rootdir, index, discover):
 
 
 @cli.command("list")
-@click.argument("rootdir", type=click.Path(exists=True))
-@click.option("-i", "--index", type=click.Path(exists=True))
+@click.argument("rootdir", type=click.Path(exists=False))
+@click.option("-i", "--index", type=click.Path(exists=False))
 def list_repos(rootdir, index):
     """List all repositories in an index with their respective status."""
 
     console = Console()
     table = Table(show_header=True, header_style="bold")
+
+    if index is None:
+        index = discover_index(Path(rootdir))
+    if rootdir is None:
+        rootdir = index.parent
+    logger.debug(f"index: {index}")
+    logger.debug(f"rootdir: {rootdir}")
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
