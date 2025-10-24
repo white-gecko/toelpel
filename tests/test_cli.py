@@ -42,10 +42,10 @@ def init_index(workspace, index, spec={}):
             dedent(f"""
             @prefix toel: <https://toelpel/> .
 
-            <urn:relpath:space/simpsons> a toel:repo ;
-                toel:remote <urn:relpath:space/simpsons#remote:origin> .
+            <path:space/simpsons> a toel:repo ;
+                toel:remote <path:space/simpsons#remote:origin> .
 
-            <urn:relpath:space/simpsons#remote:origin> toel:push <path:{spec["repo_path"]}> .
+            <path:space/simpsons#remote:origin> toel:push <path:{spec["repo_path"]}> .
             """)
         )
 
