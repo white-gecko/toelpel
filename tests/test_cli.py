@@ -70,7 +70,7 @@ def test_index(tmp_path):
     # execute index command
     runner = CliRunner()
     result = runner.invoke(cli, ["index", str(tmp_path), "--index", str(index)])
-    print(result.stdout)
+    logger.debug(result.stdout)
     assert result.exit_code == 0
     assert index.is_file()
 
