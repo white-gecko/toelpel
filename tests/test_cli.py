@@ -107,6 +107,7 @@ def test_index(tmp_path):
     assert result.exit_code == 0
     assert index.is_file()
 
+    # verify the results
     g = Graph().parse(format="turtle", source=index)
     assert g.query(**tqc.get("index_repos_exist").p())
     assert g.query(**tqc.get("index_repos_have_remote").p())
@@ -126,13 +127,13 @@ def test_scan(tmp_path):
     tqc = TemplateQueryCollection()
     tqc.loadFromDirectory("tests/assets/queries")
 
-    # init workspace, with an index
+    # init workspace, with an index and repositories
     copyfile(examples_path / "index_remote_ab.ttl", index)
-
     git(None, "init", repo_a_path)
     git(None, "init", repo_b_path)
     git(repo_b_path, "remote", "add", "origin", remote_b)
 
+    # execute scan command
     runner = CliRunner()
     result = runner.invoke(cli, ["scan", str(tmp_path), "--index", str(index)])
     logger.debug(result.stdout)
@@ -140,6 +141,7 @@ def test_scan(tmp_path):
     assert result.exit_code == 0
     assert index.is_file()
 
+    # verify the results
     g = Graph().parse(format="turtle", source=index)
     assert g.query(**tqc.get("index_repos_exist").p())
     assert g.query(**tqc.get("index_repos_have_remote").p())
