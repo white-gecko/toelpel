@@ -81,6 +81,39 @@ def test_index(tmp_path):
     assert g.query(**tqc.get("index_repo_a_and_b_exist").p())
 
 
+def test_scan(tmp_path):
+    """Test for a directory with git repositories, if the index is correctly updated."""
+    # prepare paths
+    repo_a_path = tmp_path / "repo_a"
+    repo_b_path = tmp_path / "repo_b"
+    index = tmp_path / "workspace.ttl"
+    remote_b = "https://example.org/repo_a.git"
+
+    # prepare queries
+    tqc = TemplateQueryCollection()
+    tqc.loadFromDirectory("tests/assets/queries")
+
+    # init workspace, with an index
+    copyfile(examples_path / "index_remote_ab.ttl", index)
+
+    git(None, "init", repo_a_path)
+    git(None, "init", repo_b_path)
+    git(repo_b_path, "remote", "add", "origin", remote_b)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["scan", str(tmp_path), "--index", str(index)])
+    logger.debug(result.stdout)
+    logger.debug(index)
+    assert result.exit_code == 0
+    assert index.is_file()
+
+    g = Graph().parse(format="turtle", source=index)
+    assert g.query(**tqc.get("index_repos_exist").p())
+    assert g.query(**tqc.get("index_repos_have_remote").p())
+    assert g.query(**tqc.get("index_verify_repo_remote").p(remote_b=URIRef(remote_b)))
+    assert g.query(**tqc.get("index_repo_a_and_b_exist").p())
+
+
 def test_clone(tmp_path):
     """Given an index and a target root directory, test that all repositories from the
     index are correctly created and cloned."""
