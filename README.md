@@ -2,24 +2,29 @@
 
 Is a tool to keep an overview on your Git repositories to facilitate the management of multiple Git repositories.
 
-It provides four sub-commands:
+It provides three sub-commands:
 - `scan`: Scan the repositories in an index and update the index.
   - `--discover` Add new repositories that are not contained in the index
 - `list`: List all repositories in an index with their respective status.
-  - *should be*: List all repositories *below a given directory (root dir)* with their respective status. It also creates an index of the repositories.
+  - *should be*: List all repositories from the index *below a given directory (base dir)* with their respective status.
+  - *should be*: an option of `list`, e.g. `--remote`, to checks for each git repository its synchronicity with its configured upstreams.
 - `clone`: Clone all repositories from an index relative to the given root directory.
-- `scan-remote`: For each git repository it checks its synchronicity with its configured upstreams.
 
-It also provides a permanent monitoring service, that watches your git repositories.
+*should be*: It also provides a permanent monitoring service, that watches your git repositories.
 
-- periodically performs a `scan`? for the beginning
-  - later it could also set filesystem watchers and only scan the directories in which changes happen
+- Periodically performs a `scan`? for the beginning
+  - later it could also set file system watchers and only scan the directories in which changes happen
+
+## Usage
+
+Choose a directory that should be the base of your workspace.
+
 
 ## TODO and Ideas
 
 - Detect repositories that are not part of the index.
-- Provide ids for each workspace.
-- Also index remote services, e.g. gitolite, github, and gitlab.
+- Provide IDs for each workspace.
+- Also index the personal account on remote services, e.g. gitolite, github, and gitlab.
 - A default remote service, that allows to create new repositories in this service and configure them as remote.
 
 ## The Name?
