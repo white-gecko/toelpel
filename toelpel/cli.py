@@ -31,7 +31,7 @@ def cli():
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.Path(exists=False))
-@click.option('-d', "--discover", flag_value=True)
+@click.option("-d", "--discover", flag_value=True)
 def scan(rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
 
@@ -45,7 +45,9 @@ def scan(rootdir, index, discover):
                 dir_path = Path(dir)
                 relative_path = subdir_path / dir_path
                 result = run(["git", "-C", relative_path, "rev-parse"], stderr=DEVNULL)
-                logger.debug(f"path: {subdir_path / dir_path}, result: {result.returncode}")
+                logger.debug(
+                    f"path: {subdir_path / dir_path}, result: {result.returncode}"
+                )
                 repo = git(subdir_path / dir_path)
                 if repo.is_repo:
                     git_repos.append(repo)

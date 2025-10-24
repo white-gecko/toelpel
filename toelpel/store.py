@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from click import File
 from loguru import logger
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, Namespace
