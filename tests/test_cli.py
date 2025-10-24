@@ -35,6 +35,21 @@ def init_repo_with_dir(repo_path, source_dir=None):
     git(repo_path, "commit", "-m", "init")
 
 
+def init_index(workspace, index, spec={}):
+    workspace.mkdir()
+    with open(index, mode="w") as index_file:
+        index_file.write(
+            dedent(f"""
+            @prefix toel: <https://toelpel/> .
+
+            <urn:relpath:space/simpsons> a toel:repo ;
+                toel:remote <urn:relpath:space/simpsons#remote:origin> .
+
+            <urn:relpath:space/simpsons#remote:origin> toel:push <path:{spec["repo_path"]}> .
+            """)
+        )
+
+
 def test_index(tmp_path):
     """Test for a directory with git repositories, if an index is correctly created."""
     # prepare paths
@@ -110,18 +125,7 @@ def test_clone_fixture(tmp_path, git_repo):
     git_repo.api.index.commit("Initial commit")
 
     # init empty workspace, with just an index
-    workspace.mkdir()
-    with open(index, mode="w") as index_file:
-        index_file.write(
-            dedent(f"""
-            @prefix toel: <https://toelpel/> .
-
-            <urn:relpath:space/simpsons> a toel:repo ;
-                toel:remote <urn:relpath:space/simpsons#remote:origin> .
-
-            <urn:relpath:space/simpsons#remote:origin> toel:push <path:{git_repo.uri}> .
-            """)
-        )
+    init_index(workspace, index, {"repo_path": git_repo.uri})
 
     # execute clone command
     runner = CliRunner()
