@@ -6,15 +6,16 @@ from loguru import logger
 
 
 class git:
-    def __init__(self, repo: Path):
+    def __init__(self, repo: Path, relpath: Path = None):
         self.path = repo
+        self.relpath = relpath
         self._remotes = None
 
     def __repr__(self) -> str:
         return f"<git repo at {self.path}>"
 
     def __str__(self) -> str:
-        return str(self.path)
+        return str(self.relpath) or str(self.path)
 
     @property
     def is_repo(self) -> bool:

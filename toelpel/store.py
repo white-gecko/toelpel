@@ -72,7 +72,7 @@ class WatchStore:
 
     def graph_to_list(self) -> list:
         for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
-            yield git(self.get_abspath(repo))
+            yield git(self.get_abspath(repo), Path(uri_to_path(repo)))
 
     def add_repo_to_graph(self, repo: git):
         logger.debug(
