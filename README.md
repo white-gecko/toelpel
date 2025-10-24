@@ -3,12 +3,11 @@
 Is a tool to keep an overview on your Git repositories to facilitate the management of multiple Git repositories.
 
 It provides four sub-commands:
+- `scan`: Scan the repositories in an index and update the index.
+  - `--discover` Add new repositories that are not contained in the index
 - `list`: List all repositories in an index with their respective status.
   - *should be*: List all repositories *below a given directory (root dir)* with their respective status. It also creates an index of the repositories.
 - `clone`: Clone all repositories from an index relative to the given root directory.
-- `index`: Scan all sub-directories starting from the rootdir for all git repositories and write the result to the index.
-  - *should be*: one command with `scan`
-- `scan`: Scan the repositories in an index and update the index.
 - `scan-remote`: For each git repository it checks its synchronicity with its configured upstreams.
 
 It also provides a permanent monitoring service, that watches your git repositories.

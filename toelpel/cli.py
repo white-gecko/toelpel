@@ -31,36 +31,28 @@ def cli():
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.File("bw+"))
-@click.option("-c", "--cache", type=click.File("bw+"), default=None)
-def index(rootdir, index, cache):
-    """Scan all sub-directories, starting from the rootdir, for all git repositories and
-    write the results to the index."""
-    git_repos = []
-    for subdir, dirs, files in walk(rootdir, topdown=True):
-        subdir_path = Path(subdir)
-        for dir in dirs.copy():
-            dir_path = Path(dir)
-            relative_path = subdir_path / dir_path
-            result = run(["git", "-C", relative_path, "rev-parse"], stderr=DEVNULL)
-            logger.debug(f"path: {subdir_path / dir_path}, result: {result.returncode}")
-            repo = git(subdir_path / dir_path)
-            if repo.is_repo:
-                git_repos.append(repo)
-                dirs.remove(dir)
-                logger.debug("DEL")
-
-    store = WatchStore(index, rootdir)
-    store.list_to_graph(git_repos)
-
-
-@cli.command()
-@click.argument("rootdir", type=click.Path(exists=True))
-@click.option("-i", "--index", type=click.File("br+"))
-def scan(rootdir, index):
+@click.option('-d', "--discover", flag_value=True)
+def scan(rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
 
     store = WatchStore(index, rootdir)
-    git_repos = store.graph_to_list()
+    if discover:
+        logger.info("Start discover")
+        git_repos = []
+        for subdir, dirs, files in walk(rootdir, topdown=True):
+            subdir_path = Path(subdir)
+            for dir in dirs.copy():
+                dir_path = Path(dir)
+                relative_path = subdir_path / dir_path
+                result = run(["git", "-C", relative_path, "rev-parse"], stderr=DEVNULL)
+                logger.debug(f"path: {subdir_path / dir_path}, result: {result.returncode}")
+                repo = git(subdir_path / dir_path)
+                if repo.is_repo:
+                    git_repos.append(repo)
+                    dirs.remove(dir)
+                    logger.debug("DEL")
+    else:
+        git_repos = store.graph_to_list()
     store.list_to_graph(git_repos)
 
 

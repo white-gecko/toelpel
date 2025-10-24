@@ -83,7 +83,7 @@ def test_list(tmp_path):
     assert "repo_a" in result.stdout
     assert "repo_b" in result.stdout
 
-def test_index(tmp_path):
+def test_scan_discover(tmp_path):
     """Test for a directory with git repositories, if an index is correctly created."""
     # prepare paths
     repo_a_path = tmp_path / "repo_a"
@@ -102,7 +102,7 @@ def test_index(tmp_path):
 
     # execute index command
     runner = CliRunner()
-    result = runner.invoke(cli, ["index", str(tmp_path), "--index", str(index)])
+    result = runner.invoke(cli, ["scan", "--discover", str(tmp_path), "--index", str(index)])
     logger.debug(result.stdout)
     assert result.exit_code == 0
     assert index.is_file()
