@@ -33,7 +33,8 @@ def cli():
 @click.option("-i", "--index", type=click.File("bw+"))
 @click.option("-c", "--cache", type=click.File("bw+"), default=None)
 def index(rootdir, index, cache):
-    """Scan all sub-directories starting from the rootdir for all git repositories and write the result to the index."""
+    """Scan all sub-directories, starting from the rootdir, for all git repositories and
+    write the results to the index."""
     git_repos = []
     for subdir, dirs, files in walk(rootdir, topdown=True):
         subdir_path = Path(subdir)
