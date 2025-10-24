@@ -8,7 +8,7 @@ from rdflib.namespace import RDF, Namespace
 from .git import git
 
 TOEL = Namespace("https://toelpel/")
-RELPATH = "urn:relpath:"
+RELPATH = "path:"
 INDEX_DEFAULT_NAME = "workspaces.ttl"
 
 
@@ -62,7 +62,7 @@ class WatchStore:
         return URIRef(RELPATH + str(relpath))
 
     def get_abspath(self, relpath: URIRef) -> Path:
-        return self.base / Path(str(relpath)[12:])
+        return self.base / Path(uri_to_path(relpath))
 
     def list_to_graph(self, repos: list) -> Graph:
         list(map(self.add_repo_to_graph, repos))
