@@ -41,7 +41,7 @@ def uri_to_path(uri):
 class WatchStore:
     """A WatchStore is adatastructure layered on the directory tree of the collection of git projects that allows to interact with each repository."""
 
-    def __init__(self, index: File, base: Path):
+    def __init__(self, index: str | Path, base: str | Path):
         """The index file is a `workspaces.ttl` file. The base is the base path relative to which the workspeaces.ttl should be interpreted.
 
         For a already set-up space, the base path is the parent directory of the `workspaces.ttl` file.
@@ -53,10 +53,11 @@ class WatchStore:
         store = WatchStore(index, index.parent)
         ```
         """
-        self.index = index
-        self.base = base
+        self.index = Path(index)
+        self.base = Path(base)
         self.graph = Graph()
-        self.graph.parse(self.index, format="turtle")
+        if self.index.exists():
+            self.graph.parse(self.index, format="turtle")
 
     def get_relpath(self, path: Path) -> URIRef:
         relpath = path.relative_to(self.base)

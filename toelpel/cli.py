@@ -30,7 +30,7 @@ def cli():
 
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
-@click.option("-i", "--index", type=click.File("bw+"))
+@click.option("-i", "--index", type=click.Path(exists=False))
 @click.option('-d', "--discover", flag_value=True)
 def scan(rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
@@ -58,7 +58,7 @@ def scan(rootdir, index, discover):
 
 @cli.command("list")
 @click.argument("rootdir", type=click.Path(exists=True))
-@click.option("-i", "--index", type=click.File("r"))
+@click.option("-i", "--index", type=click.Path(exists=True))
 def list_repos(rootdir, index):
     """List all repositories in an index with their respective status."""
 
