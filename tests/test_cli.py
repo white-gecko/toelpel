@@ -134,6 +134,8 @@ def test_clone(tmp_path):
     # execute clone command
     runner = CliRunner()
     result = runner.invoke(cli, ["clone", "--all", "--index", str(index)])
+    logger.debug(result.stdout)
+    logger.debug(index)
 
     # verify the results
     assert result.exit_code == 0
