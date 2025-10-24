@@ -149,14 +149,16 @@ def complete_repository(ctx, param, incomplete):
 )
 def clone(rootdir, index, all, repository):
     """Clone repositories from an index.
-    If the optional argument REPOSITORY is given as a relative path only this explicity repository is cloned.
+    If the optional argument REPOSITORY is given as a relative path only this explicity
+    repository is cloned.
     If rootdir is given, they are cloned relative to the given root directory."""
 
     logger.debug(f"repository: {repository}")
 
     if not all and repository is None:
         logger.error(
-            "You need to specify a repository or explicitely set --all if you realy want to initialize all repositories."
+            "You need to specify a repository or explicitely set --all if you realy "
+            "want to initialize all repositories."
         )
         return False
 

@@ -38,13 +38,17 @@ def uri_to_path(uri):
 
 
 class WatchStore:
-    """A WatchStore is adatastructure layered on the directory tree of the collection of git projects that allows to interact with each repository."""
+    """A WatchStore is adatastructure layered on the directory tree of the collection of
+    git projects that allows to interact with each repository."""
 
     def __init__(self, index: str | Path, base: str | Path):
-        """The index file is a `workspaces.ttl` file. The base is the base path relative to which the workspeaces.ttl should be interpreted.
+        """The index file is a `workspaces.ttl` file. The base is the base path relative
+        to which the workspeaces.ttl should be interpreted.
 
-        For a already set-up space, the base path is the parent directory of the `workspaces.ttl` file.
-        If the space is not yet initialized, the base path is the location, where the space should be initialized.
+        For a already set-up space, the base path is the parent directory of the
+        `workspaces.ttl` file.
+        If the space is not yet initialized, the base path is the location, where the
+        space should be initialized.
 
         A common usage of this class is:
         ```
