@@ -8,8 +8,8 @@ from sys import stderr
 import click
 from loguru import logger
 
+from .colony import Colony, find_index
 from .git import git
-from .store import WatchStore, find_index
 from .output import print_table
 
 
@@ -49,7 +49,7 @@ def scan(rootdir, index, discover):
 
     rootdir, index = locate_root_and_index(rootdir, index)
 
-    store = WatchStore(index, rootdir)
+    store = Colony(index, rootdir)
     if discover:
         logger.info("Start discover")
         git_repos = []
@@ -85,7 +85,7 @@ def list_repos(rootdir, index, format):
 
     rootdir, index = locate_root_and_index(rootdir, index)
 
-    store = WatchStore(index, rootdir)
+    store = Colony(index, rootdir)
     git_repos = store.graph_to_list()
 
     if format == "console":
@@ -96,7 +96,7 @@ def list_repos(rootdir, index, format):
 
 def complete_repository(ctx, param, incomplete):
     index = find_index()
-    store = WatchStore(index, index.parent)
+    store = Colony(index, index.parent)
 
     current_list = [
         k.path.relative_to(Path.cwd())
@@ -140,7 +140,7 @@ def clone(rootdir, index, all, repository):
         copyfile(index, rootdir / "workspace.ttl")
         index = rootdir / "workspace.ttl"
 
-    store = WatchStore(index, rootdir)
+    store = Colony(index, rootdir)
     git_repos = store.graph_to_list()
 
     if repository is not None:

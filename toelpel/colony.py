@@ -37,9 +37,12 @@ def uri_to_path(uri):
     return uri
 
 
-class WatchStore:
-    """A WatchStore is adatastructure layered on the directory tree of the collection of
-    git projects that allows to interact with each repository."""
+class Colony:
+    """A Colony is a datastructure layered on the directory tree of the collection of
+    git projects (nests) that allows to interact with each repository.
+
+    cf. https://en.wikipedia.org/w/index.php?title=Sulidae&oldid=1315640675#Reproduction
+    """
 
     def __init__(self, index: str | Path, base: str | Path):
         """The index file is a `workspaces.ttl` file. The base is the base path relative
@@ -53,7 +56,7 @@ class WatchStore:
         A common usage of this class is:
         ```
         index = find_index()
-        store = WatchStore(index, index.parent)
+        store = Colony(index, index.parent)
         ```
         """
         self.index = Path(index)
