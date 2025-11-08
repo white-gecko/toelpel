@@ -11,7 +11,7 @@ RELPATH = "path:"
 INDEX_DEFAULT_NAME = "workspaces.ttl"
 
 
-def discover_index(rootdir: Path | None = None):
+def find_index(rootdir: Path | None = None):
     """Discover an index file `workspaces.ttl` in the provided rootdir or the current
     directory or its closest parent."""
     if rootdir is not None:
@@ -52,7 +52,7 @@ class WatchStore:
 
         A common usage of this class is:
         ```
-        index = discover_index()
+        index = find_index()
         store = WatchStore(index, index.parent)
         ```
         """

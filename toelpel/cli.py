@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.table import Table
 
 from .git import git
-from .store import WatchStore, discover_index
+from .store import WatchStore, find_index
 
 
 @click.group()
@@ -28,12 +28,26 @@ def cli():
         logger.add(logfile, level=logfilelevel)
 
 
+def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None):
+    if isinstance(rootdir, str):
+        rootdir = Path(rootdir)
+    if index is None:
+        index = find_index(rootdir)
+    if rootdir is None:
+        rootdir = index.parent
+    logger.debug(f"index: {index}")
+    logger.debug(f"rootdir: {rootdir}")
+    return rootdir, index
+
+
 @cli.command()
 @click.argument("rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.Path(exists=False))
 @click.option("-d", "--discover", flag_value=True)
 def scan(rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
+
+    rootdir, index = locate_root_and_index(rootdir, index)
 
     store = WatchStore(index, rootdir)
     if discover:
@@ -67,12 +81,7 @@ def list_repos(rootdir, index):
     console = Console()
     table = Table(show_header=True, header_style="bold")
 
-    if index is None:
-        index = discover_index(Path(rootdir))
-    if rootdir is None:
-        rootdir = index.parent
-    logger.debug(f"index: {index}")
-    logger.debug(f"rootdir: {rootdir}")
+    rootdir, index = locate_root_and_index(rootdir, index)
 
     store = WatchStore(index, rootdir)
     git_repos = store.graph_to_list()
@@ -130,7 +139,7 @@ def list_repos(rootdir, index):
 
 
 def complete_repository(ctx, param, incomplete):
-    index = discover_index()
+    index = find_index()
     store = WatchStore(index, index.parent)
 
     current_list = [
@@ -169,12 +178,7 @@ def clone(rootdir, index, all, repository):
         )
         return False
 
-    if index is None:
-        index = discover_index(rootdir)
-    if rootdir is None:
-        rootdir = index.parent
-    logger.debug(f"index: {index}")
-    logger.debug(f"rootdir: {rootdir}")
+    rootdir, index = locate_root_and_index(rootdir, index)
 
     if index.parent != rootdir:
         copyfile(index, rootdir / "workspace.ttl")
