@@ -50,7 +50,7 @@ def init_index(workspace, index, spec={}):
         )
 
 
-def test_list(tmp_path):
+def test_list_table(tmp_path):
     """Test the list command."""
     # prepare paths
     repo_a_path = tmp_path / "repo_a"
@@ -71,6 +71,42 @@ def test_list(tmp_path):
     # execute list command
     runner = CliRunner()
     result = runner.invoke(cli, ["list", str(tmp_path), "--index", str(index)])
+    logger.debug(result.stdout)
+    logger.debug(index)
+    assert result.exit_code == 0
+    assert index.is_file()
+
+    # verify the results
+    g = Graph().parse(format="turtle", source=index)
+    assert g.query(**tqc.get("index_repos_exist").p())
+    assert g.query(**tqc.get("index_repos_have_remote").p())
+    assert "repo_a" in result.stdout
+    assert "repo_b" in result.stdout
+
+
+def test_list_json(tmp_path):
+    """Test the list command with output as json."""
+    # prepare paths
+    repo_a_path = tmp_path / "repo_a"
+    repo_b_path = tmp_path / "repo_b"
+    index = tmp_path / "workspace.ttl"
+    remote_b = "path:../../../remotes/simpsons"
+
+    # prepare queries
+    tqc = TemplateQueryCollection()
+    tqc.loadFromDirectory("tests/assets/queries")
+
+    # init workspace, with an index
+    copyfile(examples_path / "index_remote_ab.ttl", index)
+    init_repo_with_dir(repo_a_path, examples_path / "repo_content")
+    init_repo_with_dir(repo_b_path, examples_path / "repo_content")
+    git(repo_b_path, "remote", "add", "origin", remote_b)
+
+    # execute list command
+    runner = CliRunner()
+    result = runner.invoke(
+        cli, ["list", str(tmp_path), "--index", str(index), "--format", "json"]
+    )
     logger.debug(result.stdout)
     logger.debug(index)
     assert result.exit_code == 0
