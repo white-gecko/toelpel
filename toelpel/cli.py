@@ -65,6 +65,7 @@ def scan(rootdir, index, discover):
                 repo = git(subdir_path / dir_path)
                 if repo.is_repo:
                     git_repos.append(repo)
+                    # prevent walk from further descending into this directory
                     dirs.remove(dir)
                     logger.debug("DEL")
     else:
