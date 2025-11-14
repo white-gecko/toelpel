@@ -80,9 +80,9 @@ class Colony:
     def graph_to_list(self, plain=False) -> list:
         for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
             if plain:
-                yield str(git(self.get_abspath(repo), Path(uri_to_path(repo))).path)
+                yield str(git(self.get_abspath(repo), self.base).path)
             else:
-                yield git(self.get_abspath(repo), Path(uri_to_path(repo)))
+                yield git(self.get_abspath(repo), self.base)
 
     def add_repo_to_graph(self, repo: git):
         logger.debug(
