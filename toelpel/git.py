@@ -140,6 +140,7 @@ class git:
         return [branch for branch, remote in self.branches.items() if remote is None]
 
     def behind(self, branch):
+        """Tell, how many commits a repository is beind the remote."""
         remote = self.branches[branch]
         result = run(
             ["git", "-C", self.path, "rev-list", "--count", f"{branch}..{remote}"],
@@ -149,6 +150,7 @@ class git:
         return int(result.stdout) if len(result.stdout) else 0
 
     def ahead(self, branch):
+        """Tell, how many commits a repository is ahead of the remote."""
         remote = self.branches[branch]
         result = run(
             ["git", "-C", self.path, "rev-list", "--count", f"{remote}..{branch}"],
