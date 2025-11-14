@@ -28,5 +28,5 @@ def test_colony(tmp_path):
     p = tmp_path / "workspaces.ttl"
     copyfile(examples_path / "index_online.ttl", p)
     ws = Colony(index=p, base=tmp_path)
-    lst = ws.graph_to_list()
+    lst = ws.to_list()
     assert len(list(lst)) == 1

@@ -69,8 +69,8 @@ def scan(rootdir, index, discover):
                     dirs.remove(dir)
                     logger.debug("DEL")
     else:
-        git_repos = store.graph_to_list()
-    store.list_to_graph(git_repos)
+        git_repos = store.to_list()
+    store.update_from_list(git_repos)
 
 
 @cli.command("list")
@@ -89,9 +89,9 @@ def list_repos(rootdir, index, format):
     store = Colony(index, rootdir)
 
     if format == "console":
-        print_table(store.graph_to_list())
+        print_table(store.to_list())
     elif format == "json":
-        print(json.dumps(list(store.graph_to_list(plain=True))))
+        print(json.dumps(list(store.to_list(plain=True))))
 
 
 def complete_repository(ctx, param, incomplete):
@@ -100,7 +100,7 @@ def complete_repository(ctx, param, incomplete):
 
     current_list = [
         k.path.relative_to(Path.cwd())
-        for k in store.graph_to_list()
+        for k in store.to_list()
         if k.path.is_relative_to(Path.cwd())
     ]
     return [str(k) for k in current_list if str(k).startswith(incomplete)]
@@ -141,7 +141,7 @@ def clone(rootdir, index, all, repository):
         index = rootdir / "workspace.ttl"
 
     store = Colony(index, rootdir)
-    git_repos = store.graph_to_list()
+    git_repos = store.to_list()
 
     if repository is not None:
         repository_path = Path.cwd() / repository

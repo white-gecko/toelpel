@@ -72,12 +72,12 @@ class Colony:
     def get_abspath(self, relpath: URIRef) -> Path:
         return self.base / Path(uri_to_path(relpath))
 
-    def list_to_graph(self, repos: list) -> Graph:
+    def update_from_list(self, repos: list) -> Graph:
         list(map(self.add_repo_to_graph, repos))
         self.graph.serialize(self.index, format="turtle")
         return self.graph
 
-    def graph_to_list(self, plain=False) -> list:
+    def to_list(self, plain=False) -> list:
         for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
             if plain:
                 yield str(git(self.get_abspath(repo), self.base).path)
