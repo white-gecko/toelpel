@@ -87,12 +87,11 @@ def list_repos(rootdir, index, format):
     rootdir, index = locate_root_and_index(rootdir, index)
 
     store = Colony(index, rootdir)
-    git_repos = store.graph_to_list()
 
     if format == "console":
-        print_table(git_repos)
+        print_table(store.graph_to_list())
     elif format == "json":
-        json.dumps(git_repos)
+        print(json.dumps(list(store.graph_to_list(plain=True))))
 
 
 def complete_repository(ctx, param, incomplete):

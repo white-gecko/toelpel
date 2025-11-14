@@ -77,9 +77,12 @@ class Colony:
         self.graph.serialize(self.index, format="turtle")
         return self.graph
 
-    def graph_to_list(self) -> list:
+    def graph_to_list(self, plain=False) -> list:
         for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
-            yield git(self.get_abspath(repo), Path(uri_to_path(repo)))
+            if plain:
+                yield str(git(self.get_abspath(repo), Path(uri_to_path(repo))).path)
+            else:
+                yield git(self.get_abspath(repo), Path(uri_to_path(repo)))
 
     def add_repo_to_graph(self, repo: git):
         logger.debug(
