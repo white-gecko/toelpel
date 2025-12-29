@@ -7,6 +7,7 @@ It provides three sub-commands:
   - `--discover` Add new repositories that are not contained in the index
 - `list`: List all repositories in an index with their respective status.
   - *should be*: List all repositories from the index *below a given directory (base dir)* with their respective status.
+    - currently `toelpel list .` does not work in a subdirectory of the worspace root
   - *should be*: an option of `list`, e.g. `--remote`, to checks for each git repository its synchronicity with its configured upstreams.
 - `clone`: Clone all repositories from an index relative to the given root directory.
 
