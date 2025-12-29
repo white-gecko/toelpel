@@ -75,9 +75,7 @@ class git:
 
         See the getter method (`@property`) for the dict structure.
         """
-        remotes_dict = dict(remotes)
-        logger.debug(f"Setter for remotes {remotes_dict} for {self}")
-        self._remotes = remotes_dict
+        self._remotes = remotes
 
     @property
     def branches(self):
