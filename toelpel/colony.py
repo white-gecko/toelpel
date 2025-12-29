@@ -3,11 +3,13 @@ from pathlib import Path
 from loguru import logger
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, Namespace
+from itertools import chain
 
 from .git import git
 
 TOEL = Namespace("https://toelpel/")
 RELPATH = "path:"
+URN_RELPATH = "urn:relpath:"
 INDEX_DEFAULT_NAME = "workspaces.ttl"
 
 
@@ -30,9 +32,9 @@ def find_index(rootdir: Path | None = None):
 def uri_to_path(uri):
     if isinstance(uri, URIRef):
         uri_str = str(uri)
-        if uri_str[0:12] == "urn:relpath:":
+        if uri_str[0:12] == URN_RELPATH:
             return uri_str[12:]
-        elif uri_str[0:5] == "path:":
+        elif uri_str[0:5] == RELPATH:
             return uri_str[5:]
     return uri
 
@@ -65,9 +67,13 @@ class Colony:
         if self.index.exists():
             self.graph.parse(self.index, format="turtle")
 
-    def get_relpath(self, path: Path) -> URIRef:
-        relpath = path.relative_to(self.base)
-        return URIRef(RELPATH + str(relpath))
+    def get_relpath(self, path: Path) -> Path:
+        return path.relative_to(self.base)
+
+    def get_relpath_iri(self, path: Path, urn: bool = False) -> URIRef:
+        if urn:
+            return URIRef(URN_RELPATH + str(self.get_relpath(path)))
+        return URIRef(RELPATH + str(self.get_relpath(path)))
 
     def get_abspath(self, relpath: URIRef) -> Path:
         return self.base / Path(uri_to_path(relpath))
@@ -86,9 +92,9 @@ class Colony:
 
     def add_repo_to_graph(self, repo: git):
         logger.debug(
-            f"write triple for {repo}: {repo.path}: {repo.path.resolve()}: {self.get_relpath(repo.path)}"
+            f"write triple for {repo}: {repo.path}: {repo.path.resolve()}: {self.get_relpath_iri(repo.path)}"
         )
-        repo_resource = self.get_relpath(repo.path)
+        repo_resource = self.get_relpath_iri(repo.path)
         self.graph.add((repo_resource, RDF.type, TOEL["repo"]))
         for remote, remote_dict in repo.remotes.items():
             repo_resource_remote = URIRef(repo_resource + f"#remote:{remote}")
@@ -97,8 +103,13 @@ class Colony:
                 self.graph.add((repo_resource_remote, TOEL[mirror], URIRef(url)))
 
     def get_remotes(self, repo: git):
-        for _, _, remote in self.graph.triples(
-            (self.get_relpath(repo.path), TOEL["remote"], None)
+        for _, _, remote in chain(
+            self.graph.triples(
+                (self.get_relpath_iri(repo.path), TOEL["remote"], None)
+            ),
+            self.graph.triples(
+                (self.get_relpath_iri(repo.path, urn=True), TOEL["remote"], None)
+            )
         ):
             remote_name = str(remote).rsplit(":", 1)[1]
             fetch_url = self.graph.value(remote, TOEL["fetch"])
