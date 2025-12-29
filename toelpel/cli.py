@@ -129,7 +129,7 @@ def clone(rootdir, index, all, repository):
 
     if not all and repository is None:
         logger.error(
-            "You need to specify a repository or explicitely set --all if you realy "
+            "You need to specify a repository or explicitely set --all if you really "
             "want to initialize all repositories."
         )
         return False
