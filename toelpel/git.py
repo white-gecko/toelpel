@@ -183,8 +183,9 @@ class git:
             remotes = self.remotes
         if remotes.keys():
             if not ORIGIN in remotes.keys():
-                if len(remotes.keys()) == 1:
-                    origin = remotes[remotes.keys()[0]]["fetch"]
+                remotes_keys = list(remotes.keys())
+                if len(remote_keys) == 1:
+                    origin = remotes[remote_keys[0]]["fetch"]
             else:
                 origin = remotes[ORIGIN]["fetch"]
             res = run(
