@@ -148,6 +148,7 @@ def clone(rootdir, index, all, repository):
         git_repos = [repo for repo in git_repos if repo.path == repository_path]
 
     for repo in git_repos:
+        logger.debug(f"Cloning {repo} at {repo.path} …")
         repo.path.mkdir(parents=True, exist_ok=True)
         repo.remotes = store.get_remotes(repo)
         repo.clone()
