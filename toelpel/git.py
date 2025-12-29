@@ -176,6 +176,7 @@ class git:
     def clone(self, remotes=None):
         if self.remotes.keys():
             origin = self.remotes["origin"]["fetch"]
+        """Clone a repository."""
             res = run(
                 ["git", "-C", self.path, "clone", origin, "."],
                 encoding="utf-8",
@@ -184,6 +185,7 @@ class git:
             logger.debug(res)
 
     def setup(self):
+        """Set the remotes for from the repo object to the repo."""
         def set_remote(*args):
             run(
                 ["git", "-C", self.path, "remote", "add", *args],
