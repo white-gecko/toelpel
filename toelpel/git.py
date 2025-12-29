@@ -5,6 +5,8 @@ from subprocess import DEVNULL, run
 from loguru import logger
 
 
+ORIGIN = "origin"
+
 class git:
     def __init__(self, repo: Path, base: Path = None):
         self.path = repo
@@ -68,12 +70,14 @@ class git:
         return self._remotes
 
     @remotes.setter
-    def remotes(self, remotes_dict):
+    def remotes(self, remotes):
         """Set remotes.
 
         See the getter method (`@property`) for the dict structure.
         """
-        self._remotes = dict(remotes_dict)
+        remotes_dict = dict(remotes)
+        logger.debug(f"Setter for remotes {remotes_dict} for {self}")
+        self._remotes = remotes_dict
 
     @property
     def branches(self):
@@ -174,9 +178,15 @@ class git:
         )
 
     def clone(self, remotes=None):
-        if self.remotes.keys():
-            origin = self.remotes["origin"]["fetch"]
         """Clone a repository."""
+        if not remotes:
+            remotes = self.remotes
+        if remotes.keys():
+            if not ORIGIN in remotes.keys():
+                if len(remotes.keys()) == 1:
+                    origin = remotes[remotes.keys()[0]]["fetch"]
+            else:
+                origin = remotes[ORIGIN]["fetch"]
             res = run(
                 ["git", "-C", self.path, "clone", origin, "."],
                 encoding="utf-8",
