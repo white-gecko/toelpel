@@ -72,6 +72,9 @@ class Colony:
         if self.index.exists():
             self.graph.parse(self.index, format="turtle")
 
+    def get_abspath(self, relpath: URIRef) -> Path:
+        return self.base / Path(uri_to_path(relpath))
+
     def get_relpath(self, path: Path) -> Path:
         return path.relative_to(self.base)
 
@@ -79,9 +82,6 @@ class Colony:
         if urn:
             return URIRef(URN_RELPATH + str(self.get_relpath(path)))
         return URIRef(RELPATH + str(self.get_relpath(path)))
-
-    def get_abspath(self, relpath: URIRef) -> Path:
-        return self.base / Path(uri_to_path(relpath))
 
     def update_from_list(self, repos: list) -> Graph:
         list(map(self.add_repo_to_graph, repos))
