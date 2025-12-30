@@ -28,11 +28,15 @@ def cli():
         logger.add(logfile, level=logfilelevel)
 
 
-def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None):
+def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None, working_dir: Path | None = None):
     if isinstance(rootdir, str):
         rootdir = Path(rootdir)
+    if isinstance(index, str):
+        index = Path(index)
+    if isinstance(working_dir, str):
+        working_dir = Path(working_dir)
     if index is None:
-        index = find_index(rootdir)
+        index = find_index(rootdir, working_dir)
     if rootdir is None:
         rootdir = index.parent
     logger.debug(f"index: {index}")
@@ -74,17 +78,20 @@ def scan(rootdir, index, discover):
 
 
 @cli.command("list")
-@click.argument("rootdir", type=click.Path(exists=False))
+@click.argument("working_dir", type=click.Path(exists=False), default=None)
+@click.option(
+    "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)
+)
 @click.option("-i", "--index", type=click.Path(exists=False))
 @click.option("-f", "--format", default="console")
-def list_repos(rootdir, index, format):
+def list_repos(working_dir, rootdir, index, format):
     """List all repositories in an index with their respective status.
 
     format is "console" per default, but could also be "plain" or "json" or things like
     that.
     """
 
-    rootdir, index = locate_root_and_index(rootdir, index)
+    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
 
     store = Colony(index, rootdir)
 

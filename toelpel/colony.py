@@ -13,14 +13,19 @@ URN_RELPATH = "urn:relpath:"
 INDEX_DEFAULT_NAME = "workspaces.ttl"
 
 
-def find_index(rootdir: Path | None = None):
+def find_index(rootdir: Path | None = None, working_dir: Path | None = None):
     """Discover an index file `workspaces.ttl` in the provided rootdir or the current
     directory or its closest parent."""
     if rootdir is not None:
         index = rootdir / INDEX_DEFAULT_NAME
         return index if index.exists() else None
 
-    for path in [Path.cwd(), *Path.cwd().parents]:
+    if not working_dir:
+        working_dir = Path.cwd()
+    elif not working_dir.is_absolute():
+        working_dir = working_dir.absolute()
+
+    for path in [working_dir, *working_dir.parents]:
         index = path / INDEX_DEFAULT_NAME
         if index.exists():
             return index
