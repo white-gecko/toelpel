@@ -10,6 +10,7 @@ It provides three sub-commands:
     - currently `toelpel list .` does not work in a subdirectory of the worspace root
   - *should be*: an option of `list`, e.g. `--remote`, to checks for each git repository its synchronicity with its configured upstreams.
 - `clone`: Clone all repositories from an index relative to the given root directory.
+  - *should have*: and option to only clone selected repos
 
 *should be*: It also provides a permanent monitoring service, that watches your git repositories.
 
