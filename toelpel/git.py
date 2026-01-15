@@ -117,6 +117,7 @@ class git:
 
     @property
     def dirty(self):
+        """See also https://www.kernel.org/pub/software/scm/git/docs/gitglossary.html#def_dirty"""
         result = run(
             ["git", "-C", self.path, "status", "--porcelain"],
             encoding="utf-8",
