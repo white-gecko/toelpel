@@ -4,8 +4,8 @@ from subprocess import DEVNULL, run
 
 from loguru import logger
 
-
 ORIGIN = "origin"
+
 
 class git:
     def __init__(self, repo: Path, base: Path = None):
@@ -196,6 +196,7 @@ class git:
 
     def setup(self):
         """Set the remotes for from the repo object to the repo."""
+
         def set_remote(*args):
             run(
                 ["git", "-C", self.path, "remote", "add", *args],

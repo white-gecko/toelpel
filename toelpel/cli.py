@@ -28,7 +28,11 @@ def cli():
         logger.add(logfile, level=logfilelevel)
 
 
-def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None, working_dir: Path | None = None):
+def locate_root_and_index(
+    rootdir: Path | None = None,
+    index: Path | None = None,
+    working_dir: Path | None = None,
+):
     if isinstance(rootdir, str):
         rootdir = Path(rootdir)
     if isinstance(index, str):
@@ -122,7 +126,11 @@ def complete_repository(ctx, param, incomplete):
 )
 @click.option("--all", is_flag=True, default=False, help="Clone all repositories")
 @click.option(
-    "-w", "--workingdir", "working_dir", default=None, type=click.Path(exists=True, path_type=Path)
+    "-w",
+    "--workingdir",
+    "working_dir",
+    default=None,
+    type=click.Path(exists=True, path_type=Path),
 )
 @click.option(
     "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)

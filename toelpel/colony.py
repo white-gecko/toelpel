@@ -1,9 +1,9 @@
+from itertools import chain
 from pathlib import Path
 
 from loguru import logger
 from rdflib import Graph, URIRef
 from rdflib.namespace import RDF, Namespace
-from itertools import chain
 
 from .git import git
 
@@ -109,12 +109,10 @@ class Colony:
 
     def get_remotes(self, repo: git):
         for _, _, remote in chain(
-            self.graph.triples(
-                (self.get_relpath_iri(repo.path), TOEL["remote"], None)
-            ),
+            self.graph.triples((self.get_relpath_iri(repo.path), TOEL["remote"], None)),
             self.graph.triples(
                 (self.get_relpath_iri(repo.path, urn=True), TOEL["remote"], None)
-            )
+            ),
         ):
             remote_name = str(remote).rsplit(":", 1)[1]
             fetch_url = self.graph.value(remote, TOEL["fetch"])
