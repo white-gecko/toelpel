@@ -75,7 +75,7 @@ class git:
 
         See the getter method (`@property`) for the dict structure.
         """
-        self._remotes = remotes
+        self._remotes = dict(remotes)
 
     @property
     def branches(self):
@@ -181,7 +181,7 @@ class git:
         if not remotes:
             remotes = self.remotes
         if remotes.keys():
-            if not ORIGIN in remotes.keys():
+            if ORIGIN not in remotes.keys():
                 remote_keys = list(remotes.keys())
                 if len(remote_keys) == 1:
                     origin = remotes[remote_keys[0]]["fetch"]
