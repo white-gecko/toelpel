@@ -28,7 +28,11 @@ def cli():
         logger.add(logfile, level=logfilelevel)
 
 
-def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None, workingdir: Path | None = None):
+def locate_root_and_index(
+    rootdir: Path | None = None,
+    index: Path | None = None,
+    workingdir: Path | None = None,
+):
     if isinstance(rootdir, str):
         rootdir = Path(rootdir)
     if isinstance(index, str):
