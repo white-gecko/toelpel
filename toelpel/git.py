@@ -4,8 +4,8 @@ from subprocess import DEVNULL, run
 
 from loguru import logger
 
-
 ORIGIN = "origin"
+
 
 class git:
     def __init__(self, repo: Path, base: Path = None):
@@ -75,7 +75,7 @@ class git:
 
         See the getter method (`@property`) for the dict structure.
         """
-        self._remotes = remotes
+        self._remotes = dict(remotes)
 
     @property
     def branches(self):
@@ -117,6 +117,7 @@ class git:
 
     @property
     def dirty(self):
+        """See also https://www.kernel.org/pub/software/scm/git/docs/gitglossary.html#def_dirty"""
         result = run(
             ["git", "-C", self.path, "status", "--porcelain"],
             encoding="utf-8",
@@ -180,7 +181,7 @@ class git:
         if not remotes:
             remotes = self.remotes
         if remotes.keys():
-            if not ORIGIN in remotes.keys():
+            if ORIGIN not in remotes.keys():
                 remote_keys = list(remotes.keys())
                 if len(remote_keys) == 1:
                     origin = remotes[remote_keys[0]]["fetch"]
@@ -195,6 +196,7 @@ class git:
 
     def setup(self):
         """Set the remotes for from the repo object to the repo."""
+
         def set_remote(*args):
             run(
                 ["git", "-C", self.path, "remote", "add", *args],

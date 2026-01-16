@@ -49,13 +49,14 @@ def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None
 
 
 @cli.command()
-@click.argument("rootdir", type=click.Path(exists=True))
+@click.argument("working_dir", type=click.Path(exists=True))
+@click.option("-r", "--rootdir", type=click.Path(exists=True))
 @click.option("-i", "--index", type=click.Path(exists=False))
 @click.option("-d", "--discover", flag_value=True)
-def scan(rootdir, index, discover):
+def scan(working_dir, rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
 
-    rootdir, index, _ = locate_root_and_index(rootdir, index)
+    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
 
     store = Colony(index, rootdir)
     if discover:
@@ -125,12 +126,19 @@ def complete_repository(ctx, param, incomplete):
 )
 @click.option("--all", is_flag=True, default=False, help="Clone all repositories")
 @click.option(
+    "-w",
+    "--workingdir",
+    "working_dir",
+    default=None,
+    type=click.Path(exists=True, path_type=Path),
+)
+@click.option(
     "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)
 )
 @click.option(
     "-i", "--index", default=None, type=click.Path(exists=True, path_type=Path)
 )
-def clone(rootdir, index, all, repository):
+def clone(working_dir, rootdir, index, all, repository):
     """Clone repositories from an index.
     If the optional argument REPOSITORY is given as a relative path only this explicity
     repository is cloned.
@@ -145,7 +153,7 @@ def clone(rootdir, index, all, repository):
         )
         return False
 
-    rootdir, index, _ = locate_root_and_index(rootdir, index)
+    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
 
     if index.parent != rootdir:
         copyfile(index, rootdir / "workspace.ttl")
