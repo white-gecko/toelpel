@@ -10,7 +10,7 @@ def test_locate_root_and_index_current_dir_dot(tmp_path):
     index.touch()
     os.chdir(tmp_path)
 
-    root_dir, index_found = locate_root_and_index(".")
+    root_dir, index_found, _ = locate_root_and_index(".")
 
     # verify the results
     assert index_found.is_file()
@@ -25,7 +25,7 @@ def test_locate_root_and_index_current_dir(tmp_path):
     index.touch()
     os.chdir(tmp_path)
 
-    root_dir, index_found = locate_root_and_index()
+    root_dir, index_found, _ = locate_root_and_index()
 
     # verify the results
     assert index_found.is_file()
@@ -42,7 +42,7 @@ def test_locate_root_and_index_parent_dir(tmp_path):
     child.mkdir()
     os.chdir(child)
 
-    root_dir, index_found = locate_root_and_index()
+    root_dir, index_found, _ = locate_root_and_index()
 
     # verify the results
     assert index_found.is_file()
@@ -56,7 +56,7 @@ def test_locate_root_and_index_from_other_dir(tmp_path):
     index = tmp_path / "workspaces.ttl"
     index.touch()
 
-    root_dir, index_found = locate_root_and_index(tmp_path)
+    root_dir, index_found, _ = locate_root_and_index(tmp_path)
 
     # verify the results
     assert index_found.is_file()
@@ -69,7 +69,7 @@ def test_locate_root_and_index_from_other_dir_given_index(tmp_path):
     index = tmp_path / "workspaces.ttl"
     index.touch()
 
-    root_dir, index_found = locate_root_and_index(tmp_path, index)
+    root_dir, index_found, _ = locate_root_and_index(tmp_path, index)
 
     # verify the results
     assert index_found.is_file()
@@ -83,7 +83,7 @@ def test_locate_root_and_index_from_other_dir_given_index_different_name(tmp_pat
     index = tmp_path / "my_repos.ttl"
     index.touch()
 
-    root_dir, index_found = locate_root_and_index(tmp_path, index)
+    root_dir, index_found, _ = locate_root_and_index(tmp_path, index)
 
     # verify the results
     assert index_found.is_file()
@@ -104,7 +104,7 @@ def test_locate_root_and_index_from_other_dir_given_index_in_other_dir(tmp_path)
     backup.mkdir()
     index.touch()
 
-    root_dir, index_found = locate_root_and_index(workspaces, index)
+    root_dir, index_found, _ = locate_root_and_index(workspaces, index)
 
     # verify the results
     assert index_found.is_file()
@@ -125,7 +125,7 @@ def test_locate_root_and_index_other_dir_given_index_different_name(tmp_path):
     backup.mkdir()
     index.touch()
 
-    root_dir, index_found = locate_root_and_index(workspaces, index)
+    root_dir, index_found, _ = locate_root_and_index(workspaces, index)
 
     # verify the results
     assert index_found.is_file()

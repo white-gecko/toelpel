@@ -20,9 +20,7 @@ def find_index(rootdir: Path | None = None, working_dir: Path | None = None):
         index = rootdir / INDEX_DEFAULT_NAME
         return index if index.exists() else None
 
-    if not working_dir:
-        working_dir = Path.cwd()
-    elif not working_dir.is_absolute():
+    if working_dir and not working_dir.is_absolute():
         working_dir = working_dir.absolute()
 
     for path in [working_dir, *working_dir.parents]:
@@ -88,12 +86,15 @@ class Colony:
         self.graph.serialize(self.index, format="turtle")
         return self.graph
 
-    def to_list(self, plain=False) -> list:
+    def to_list(self, working_dir: Path | None = None, plain=False) -> list:
         for repo, _, _ in self.graph.triples((None, RDF.type, TOEL["repo"])):
+            repo_abspath = self.get_abspath(repo)
+            if working_dir and not repo_abspath.is_relative_to(working_dir):
+                continue
             if plain:
-                yield str(git(self.get_abspath(repo), self.base).path)
+                yield str(git(repo_abspath, self.base).path)
             else:
-                yield git(self.get_abspath(repo), self.base)
+                yield git(repo_abspath, self.base)
 
     def add_repo_to_graph(self, repo: git):
         logger.debug(

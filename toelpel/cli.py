@@ -28,20 +28,24 @@ def cli():
         logger.add(logfile, level=logfilelevel)
 
 
-def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None, working_dir: Path | None = None):
+def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None, workingdir: Path | None = None):
     if isinstance(rootdir, str):
         rootdir = Path(rootdir)
     if isinstance(index, str):
         index = Path(index)
-    if isinstance(working_dir, str):
-        working_dir = Path(working_dir)
+    if isinstance(workingdir, str):
+        workingdir = Path(workingdir)
+    if not workingdir:
+        workingdir = Path.cwd()
+    elif not workingdir.is_absolute():
+        workingdir = workingdir.absolute()
     if index is None:
-        index = find_index(rootdir, working_dir)
+        index = find_index(rootdir, workingdir)
     if rootdir is None:
         rootdir = index.parent
     logger.debug(f"index: {index}")
     logger.debug(f"rootdir: {rootdir}")
-    return rootdir, index
+    return rootdir, index, workingdir
 
 
 @cli.command()
@@ -51,7 +55,7 @@ def locate_root_and_index(rootdir: Path | None = None, index: Path | None = None
 def scan(rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
 
-    rootdir, index = locate_root_and_index(rootdir, index)
+    rootdir, index, _ = locate_root_and_index(rootdir, index)
 
     store = Colony(index, rootdir)
     if discover:
@@ -91,14 +95,14 @@ def list_repos(working_dir, rootdir, index, format):
     that.
     """
 
-    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
+    rootdir, index, working_dir = locate_root_and_index(rootdir, index, working_dir)
 
     store = Colony(index, rootdir)
 
     if format == "console":
-        print_table(store.to_list())
+        print_table(store.to_list(working_dir=working_dir))
     elif format == "json":
-        print(json.dumps(list(store.to_list(plain=True))))
+        print(json.dumps(list(store.to_list(working_dir=working_dir, plain=True))))
 
 
 def complete_repository(ctx, param, incomplete):
@@ -141,7 +145,7 @@ def clone(rootdir, index, all, repository):
         )
         return False
 
-    rootdir, index = locate_root_and_index(rootdir, index)
+    rootdir, index, _ = locate_root_and_index(rootdir, index)
 
     if index.parent != rootdir:
         copyfile(index, rootdir / "workspace.ttl")
