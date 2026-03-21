@@ -3,7 +3,7 @@
 name = "toelpel"
 description = ""
 license = "GPLv3+"
-version = "0.1.0"
+version = "0.1.1"
 readme = "README.md"
 authors = [{name = "Natanael Arndt", email = "arndtn@gmail.com"}]
 requires-python = '>=3.12,<4.0'
