@@ -60,7 +60,7 @@ def locate_root_and_index(
 def scan(working_dir, rootdir, index, discover):
     """Scan the repositories in an index and update the index."""
 
-    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
+    rootdir, index, working_dir = locate_root_and_index(rootdir, index, working_dir)
 
     store = Colony(index, rootdir)
     if discover:
@@ -157,7 +157,7 @@ def clone(working_dir, rootdir, index, all, repository):
         )
         return False
 
-    rootdir, index = locate_root_and_index(rootdir, index, working_dir)
+    rootdir, index, working_dir = locate_root_and_index(rootdir, index, working_dir)
 
     if index.parent != rootdir:
         copyfile(index, rootdir / "workspace.ttl")
