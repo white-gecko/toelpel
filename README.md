@@ -5,10 +5,11 @@ Is a tool to keep an overview on your Git repositories to facilitate the managem
 It provides three sub-commands:
 - `scan`: Scan the repositories in an index and update the index.
   - `--discover` Add new repositories that are not contained in the index
-- `list`: List all repositories in an index with their respective status.
+- `list` (rename to `status`): List all repositories in an index with their respective status.
   - *should be*: List all repositories from the index *below a given directory (base dir)* with their respective status.
     - currently `toelpel list .` does not work in a subdirectory of the worspace root
   - *should be*: an option of `list`, e.g. `--remote`, to checks for each git repository its synchronicity with its configured upstreams.
+  - *should be*: just list the status of repos that are not clean, add an `--all` flag to list status of all repos.
 - `clone`: Clone all repositories from an index relative to the given root directory.
   - *should have*: and option to only clone selected repos
 
