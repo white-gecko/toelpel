@@ -3,6 +3,7 @@
 Is a tool to keep an overview on your Git repositories to facilitate the management of multiple Git repositories.
 
 It provides three sub-commands:
+- `add`: Add the current or some specified repository to a workspace
 - `scan`: Scan the repositories in an index and update the index.
   - `--discover` Add new repositories that are not contained in the index
 - `list` (rename to `status`): List all repositories in an index with their respective status.
