@@ -50,8 +50,8 @@ def init_index(workspace, index, spec={}):
         )
 
 
-def test_list_table(tmp_path):
-    """Test the list command."""
+def test_status_table(tmp_path):
+    """Test the status command."""
     # prepare paths
     repo_a_path = tmp_path / "repo_a"
     repo_b_path = tmp_path / "repo_b"
@@ -68,9 +68,9 @@ def test_list_table(tmp_path):
     init_repo_with_dir(repo_b_path, examples_path / "repo_content")
     git(repo_b_path, "remote", "add", "origin", remote_b)
 
-    # execute list command
+    # execute status command
     runner = CliRunner()
-    result = runner.invoke(cli, ["list", str(tmp_path), "--index", str(index)])
+    result = runner.invoke(cli, ["status", str(tmp_path), "--index", str(index)])
     logger.debug(result.stdout)
     logger.debug(index)
     assert result.exit_code == 0
@@ -84,8 +84,8 @@ def test_list_table(tmp_path):
     assert "repo_b" in result.stdout
 
 
-def test_list_json(tmp_path):
-    """Test the list command with output as json."""
+def test_status_json(tmp_path):
+    """Test the status command with output as json."""
     # prepare paths
     repo_a_path = tmp_path / "repo_a"
     repo_b_path = tmp_path / "repo_b"
@@ -102,10 +102,10 @@ def test_list_json(tmp_path):
     init_repo_with_dir(repo_b_path, examples_path / "repo_content")
     git(repo_b_path, "remote", "add", "origin", remote_b)
 
-    # execute list command
+    # execute status command
     runner = CliRunner()
     result = runner.invoke(
-        cli, ["list", str(tmp_path), "--index", str(index), "--format", "json"]
+        cli, ["status", str(tmp_path), "--index", str(index), "--format", "json"]
     )
     logger.debug(result.stdout)
     logger.debug(index)

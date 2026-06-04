@@ -86,14 +86,14 @@ def scan(working_dir, rootdir, index, discover):
     store.update_from_list(git_repos)
 
 
-@cli.command("list")
+@cli.command()
 @click.argument("working_dir", type=click.Path(exists=False), default=None)
 @click.option(
     "-r", "--rootdir", default=None, type=click.Path(exists=True, path_type=Path)
 )
 @click.option("-i", "--index", type=click.Path(exists=False))
 @click.option("-f", "--format", default="console")
-def list_repos(working_dir, rootdir, index, format):
+def status(working_dir, rootdir, index, format):
     """List all repositories in an index with their respective status.
 
     format is "console" per default, but could also be "plain" or "json" or things like
