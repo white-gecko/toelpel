@@ -7,10 +7,13 @@ It provides three sub-commands:
 - `scan`: Scan the repositories in an index and update the index.
   - `--discover` Add new repositories that are not contained in the index
 - `status`: List all repositories in an index with their respective status.
-  - *should be*: just list the status of repos that are not clean, including untracked repositories, add an `--all` flag to get the status of all repos.
+  - *should be*: just list the status of repos that are not clean
   - *should be*: an option of `list`, e.g. `--remote`, to checks for each git repository its synchronicity with its configured upstreams.
-- `clone`: Clone all repositories from an index relative to the given root directory.
-  - *should have*: and option to only clone selected repos
+  - *should be*: show the repository names relative to the current directory
+  - *should be*: add a flag to including untracked repositories, this might make `scan` and `scan --discover` superfluous.
+  - *should be*: add a flag to list also repositories from the workspace that are not cloned.
+  - *should be*: add an `--all` flag to get the status of all repos, untracked and tracked but not cloned.
+- `clone`: Clone a repository from an index relative to the given root directory. With the option `--all` all repositories in an index can be cloned.
 
 *should be*: It also provides a permanent monitoring service, that watches your git repositories.
 
